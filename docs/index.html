@@ -318,7 +318,7 @@
       configScript.src = './supabase-config.js';
       configScript.onload = () => {
         const loginScript = document.createElement('script');
-        loginScript.src = './supabase-login.js';
+        loginScript.src = './supabase-login.js?v=2';
         document.body.append(loginScript);
       };
       configScript.onerror = () => console.error('Supabase configuration failed to load.');
