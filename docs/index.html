@@ -311,6 +311,21 @@
     $('serverNav').addEventListener('click', async () => { await checkHealth(); toast($('serverLabel').textContent); });
     $('counter').textContent = `${promptEl.value.length} / 500`;
     checkHealth();
+    const supabaseLibrary = document.createElement('script');
+    supabaseLibrary.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    supabaseLibrary.onload = () => {
+      const configScript = document.createElement('script');
+      configScript.src = './supabase-config.js';
+      configScript.onload = () => {
+        const loginScript = document.createElement('script');
+        loginScript.src = './supabase-login.js';
+        document.body.append(loginScript);
+      };
+      configScript.onerror = () => console.error('Supabase configuration failed to load.');
+      document.body.append(configScript);
+    };
+    supabaseLibrary.onerror = () => console.error('Supabase client failed to load.');
+    document.body.append(supabaseLibrary);
   </script>
 </body>
 </html>
