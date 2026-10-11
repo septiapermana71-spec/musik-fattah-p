@@ -23,7 +23,10 @@ BASE_URL = os.getenv(
 
 CALLBACK_URL = f"{BASE_URL}/callback"
 
-SUNO_BASE_API = "https://api.kie.ai/api/v1"
+SUNO_BASE_API = os.getenv(
+    "SUNO_API_BASE",
+    "https://apibox.erweima.ai/api/v1"
+).rstrip("/")
 STYLE_GENERATE_URL = f"{SUNO_BASE_API}/style/generate"
 MUSIC_GENERATE_URL = f"{SUNO_BASE_API}/generate"
 STATUS_URL = f"{SUNO_BASE_API}/generate/record-info"
@@ -51,7 +54,7 @@ class GenerateMusicRequest(BaseModel):
     title: Optional[str] = None
     instrumental: bool = False
     customMode: bool = False
-    model: str = "V4_5"
+    model: str = "V6"
 
 # ================= HELPERS =================
 def suno_headers():
