@@ -6,10 +6,10 @@
   accountStyle.textContent += '.google-login,.logout-btn{font:700 12px/1.2 system-ui,sans-serif}';
   accountStyle.textContent += '.email-auth-form{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.email-field{width:150px;min-width:0;background:#0c1319;color:#f0f5f8;border:1px solid #354550;border-radius:9px;padding:8px 9px;font:12px system-ui,sans-serif}.email-auth-buttons{display:flex;gap:6px}.email-auth-form .logout-btn{background:#15212b}.email-auth-form .google-login{background:linear-gradient(100deg,#42dfb0,#438dff)}@media(max-width:600px){.email-auth-form{width:100%}.email-field{flex:1;min-width:130px}}';
   document.head.append(accountStyle);
-  const topbar = document.querySelector('.topbar');
-  if (topbar && !document.getElementById('accountPanel')) {
-    topbar.insertAdjacentHTML('afterend', `<section class="account-panel" id="accountPanel" aria-label="Akun dan pustaka lagu">
-      <div class="account-copy"><div class="account-title">Akun &amp; pustaka lagu</div><p class="account-description">Masuk dengan email dan kata sandi untuk menyimpan riwayat lagu di Supabase: prompt, Task ID, status, judul, tautan audio, dan sampul. Hanya akun Anda yang dapat membacanya.</p><p class="auth-message" id="authMessage">Menyiapkan login email…</p></div>
+  const hero = document.querySelector('.hero');
+  if (hero && !document.getElementById('accountPanel')) {
+    hero.insertAdjacentHTML('afterend', `<section class="account-panel" id="accountPanel" aria-label="Akun dan pustaka lagu">
+      <div class="account-copy"><div class="account-title">Akun &amp; pustaka lagu</div><p class="account-description">Simpan prompt dan riwayat lagu—judul, status, sampul, serta tautan audio—di akun pribadi Anda.</p><p class="auth-message" id="authMessage">Masuk atau daftar dengan email.</p></div>
       <div class="auth-actions"><div id="loginArea" class="email-auth-form"><input class="email-field" id="authEmail" type="email" autocomplete="email" placeholder="Email" aria-label="Email"><input class="email-field" id="authPassword" type="password" autocomplete="current-password" placeholder="Kata sandi" aria-label="Kata sandi"><div class="email-auth-buttons"><button class="google-login" id="emailLoginBtn" type="button">Masuk Email</button><button class="logout-btn" id="emailSignupBtn" type="button">Daftar</button></div></div><div class="account-user" id="profileArea" hidden><img class="account-avatar" id="userAvatar" alt="" hidden><div class="account-user-copy"><div class="account-user-name" id="userName"></div><div class="account-user-email" id="userEmail"></div></div><button class="logout-btn" id="logoutBtn" type="button">Keluar</button></div></div>
     </section>`);
   }
@@ -96,7 +96,7 @@
       loginArea.hidden = false;
       profileArea.hidden = true;
       clearTrackList();
-      message('Masuk dengan email dan kata sandi untuk menyimpan lagu dan membuka pustaka Anda.');
+      message('Masuk atau daftar menggunakan email Anda.');
       return;
     }
     const metadata = currentUser.user_metadata || {};

@@ -1,0 +1,314 @@
+/* FattahMusic — polished responsive interface */
+:root {
+  color-scheme: dark;
+  --bg: #0a0f14;
+  --panel: #111922;
+  --panel-2: #151f29;
+  --line: rgba(183, 204, 218, .13);
+  --muted: #98a8b7;
+  --text: #edf3f6;
+  --mint: #63dfbd;
+  --blue: #82aaff;
+  --purple: #b58aff;
+  --radius: 20px;
+  --shadow: 0 18px 48px rgba(0, 0, 0, .28);
+}
+
+html { scroll-padding-top: 20px; }
+body {
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse at 78% -9%, rgba(53, 139, 133, .15), transparent 38%),
+    radial-gradient(ellipse at 0 48%, rgba(93, 63, 133, .10), transparent 42%),
+    var(--bg);
+  color: var(--text);
+  letter-spacing: .005em;
+}
+button, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 3px;
+}
+.app { width: min(100%, 1160px); padding: 22px 28px 104px; }
+.topbar {
+  min-height: 62px;
+  padding: 2px 0 16px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(210, 228, 238, .09);
+}
+.brand { gap: 11px; }
+.brand-mark { width: 42px; height: 42px; border-radius: 14px; box-shadow: 0 7px 22px rgba(77, 229, 180, .22); }
+.brand-name { font-size: 19px; letter-spacing: -.55px; }
+.brand-sub { margin-top: 0; font-size: 11px; letter-spacing: .02em; }
+.server-pill {
+  min-height: 36px;
+  padding: 8px 12px;
+  border-color: var(--line);
+  background: rgba(17, 25, 34, .78);
+  color: #c4d0d8;
+  font-size: 11px;
+  backdrop-filter: blur(12px);
+}
+.hero {
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr);
+  gap: 26px;
+  margin: 10px 0 22px;
+}
+.hero-copy { align-self: center; padding: 12px 4px 16px; }
+.eyebrow { color: var(--mint); font-size: 10px; letter-spacing: 1.7px; }
+.hero h1 {
+  max-width: 620px;
+  margin: 13px 0 14px;
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: 1.02;
+  letter-spacing: -.055em;
+}
+.hero-copy p { max-width: 450px; color: #aab7c1; font-size: 14px; line-height: 1.7; }
+.gradient-text { background-image: linear-gradient(100deg, #66e2c1 5%, #8caeff 62%, #c28bff); }
+.hero-art {
+  min-height: 205px;
+  border: 1px solid rgba(206, 222, 233, .13);
+  border-radius: 22px;
+  background: linear-gradient(132deg, #10252a 0%, #131a2a 54%, #21182e 100%);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, .24);
+}
+.hero-art:before, .hero-art:after { opacity: .34; filter: blur(72px); }
+.wave { width: 86%; height: 145px; }
+.wave path { stroke-width: 1.8; opacity: .74; }
+.art-caption { left: 19px; bottom: 15px; color: #cfdae2; font-size: 9px; letter-spacing: 1.3px; }
+
+/* Sign-in is a separate, aligned card rather than a cramped toolbar row. */
+main.app > .account-panel {
+  display: grid;
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+  align-items: center;
+  gap: 24px;
+  margin: 0 0 22px;
+  padding: 18px 21px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(115deg, rgba(20, 31, 39, .98), rgba(16, 23, 34, .96));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .2);
+}
+main.app .account-title { color: #f1f6f8; font-size: 14px; letter-spacing: -.01em; }
+main.app .account-description { max-width: 470px; margin-top: 5px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+main.app .auth-message { margin-top: 7px; color: #b5c3cd; font-size: 11px; line-height: 1.45; }
+main.app .auth-actions { display: block; width: 100%; min-width: 0; }
+main.app .email-auth-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+main.app .email-field {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid rgba(172, 194, 208, .18);
+  border-radius: 11px;
+  background: #0b1218;
+  color: var(--text);
+  font: 12px/1.3 system-ui, sans-serif;
+  transition: border-color .18s, box-shadow .18s;
+}
+main.app .email-field::placeholder { color: #788895; }
+main.app .email-field:focus { border-color: rgba(99, 223, 189, .75); box-shadow: 0 0 0 3px rgba(99, 223, 189, .1); outline: 0; }
+main.app .email-auth-buttons {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+main.app .email-auth-buttons button {
+  min-height: 38px;
+  padding: 9px 15px;
+  border-radius: 10px;
+  font: 700 12px/1.2 system-ui, sans-serif;
+  transition: transform .16s, filter .16s, border-color .16s;
+}
+main.app .email-auth-buttons button:hover { transform: translateY(-1px); filter: brightness(1.06); }
+main.app .email-auth-buttons .google-login { background: linear-gradient(105deg, #56dcb8, #83aaff); color: #07151a; }
+main.app .email-auth-buttons .logout-btn { border: 1px solid rgba(180, 202, 216, .19); background: #18232d; color: #dce6eb; }
+main.app .account-user { min-width: 0; padding: 5px 0; }
+main.app .account-avatar { border: 1px solid rgba(190, 211, 224, .2); }
+main.app .account-user-name { color: #edf3f6; font-size: 12px; }
+main.app .account-user-email { color: var(--muted); font-size: 10px; }
+
+.workspace {
+  grid-template-columns: minmax(0, 1.16fr) minmax(310px, .84fr);
+  align-items: start;
+  gap: 20px;
+}
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 21px;
+  background: linear-gradient(150deg, rgba(18, 27, 37, .98), rgba(14, 21, 29, .98));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+.composer { padding: 25px; }
+.section-head { align-items: center; margin-bottom: 20px; }
+.section-head h2 { font-size: 19px; letter-spacing: -.035em; }
+.section-head p { margin-top: 5px; color: var(--muted); font-size: 12px; }
+.step { border-color: rgba(168, 193, 207, .13); background: #18232d; color: #afbdc8; font-size: 10px; letter-spacing: .07em; }
+.label-row { margin-bottom: 8px; }
+.label { color: #eaf0f3; font-size: 12px; }
+.counter { color: #8293a1; font-variant-numeric: tabular-nums; }
+textarea {
+  min-height: 150px;
+  padding: 16px 17px;
+  border: 1px solid rgba(173, 196, 209, .2);
+  border-radius: 14px;
+  background: #0a1117;
+  color: #f1f5f7;
+  font-size: 14px;
+  line-height: 1.7;
+}
+textarea::placeholder { color: #738391; }
+textarea:focus, select:focus { border-color: rgba(99, 223, 189, .78); box-shadow: 0 0 0 3px rgba(99, 223, 189, .1); }
+.textarea-hint { color: #8696a4; font-size: 10px; }
+.chips { gap: 7px; margin: 14px 0 18px; }
+.chip {
+  min-height: 32px;
+  padding: 7px 11px;
+  border-color: rgba(173, 196, 209, .16);
+  background: rgba(24, 35, 45, .75);
+  color: #c0ccd4;
+  font-size: 11px;
+}
+.chip:hover, .chip.active { border-color: rgba(99, 223, 189, .6); background: rgba(28, 75, 65, .42); color: #a9f4df; }
+.options { gap: 16px; padding: 14px 0; border-color: rgba(173, 196, 209, .11); }
+.toggle-wrap { min-height: 42px; }
+.toggle { width: 40px; height: 23px; border-color: #495965; background: #26323d; }
+.toggle:before { width: 15px; height: 15px; left: 3px; top: 3px; }
+.toggle:checked:before { transform: translateX(16px); }
+.toggle-title { font-size: 12px; }
+.toggle-sub, .model-field label { color: #8e9eab; font-size: 10px; }
+select { min-height: 38px; border-color: rgba(173, 196, 209, .18); border-radius: 10px; background: #111a23; font-size: 11px; }
+.quota-note {
+  margin: 14px 0;
+  padding: 10px 12px;
+  border-color: rgba(180, 147, 83, .2);
+  border-radius: 11px;
+  background: rgba(91, 68, 27, .14);
+  color: #c8b889;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.generate {
+  min-height: 50px;
+  border-radius: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(105deg, #55dcb6, #76a5ff);
+  box-shadow: 0 9px 26px rgba(78, 152, 208, .18);
+  font-size: 14px;
+  letter-spacing: .005em;
+}
+.generate:hover { filter: saturate(1.08) brightness(1.04); }
+.btn-caption { margin-top: 3px; color: rgba(6, 20, 26, .72); font-size: 9px; }
+.status { border-color: rgba(173, 196, 209, .16); border-radius: 12px; background: #0b1218; }
+.status-line { font-size: 12px; }
+.status-text { line-height: 1.55; }
+.progress { height: 3px; }
+.side { gap: 14px; }
+.mini-card, .results { padding: 19px; }
+.mini-title { margin-bottom: 5px; font-size: 13px; }
+.mini-copy { margin-bottom: 11px; font-size: 11px; line-height: 1.55; }
+.endpoint { border-color: rgba(173, 196, 209, .14); background: #0b1218; color: #a9dccc; font-size: 10px; }
+.server-check { margin-top: 10px; color: #b5c3cc; font-size: 11px; }
+.results { min-height: 170px; }
+.results-head { margin-bottom: 13px; }
+.results-head h2 { font-size: 16px; letter-spacing: -.025em; }
+.result-count { border: 1px solid rgba(173, 196, 209, .12); background: #17222c; color: #bfccd5; font-variant-numeric: tabular-nums; }
+.empty { border-color: rgba(173, 196, 209, .17); border-radius: 14px; background: rgba(10, 17, 23, .55); padding: 20px 15px; line-height: 1.6; }
+.empty-icon { background: #17252a; color: var(--mint); }
+.track { border-color: rgba(173, 196, 209, .14); border-radius: 14px; background: #0b1218; padding: 13px; }
+.track-top { align-items: center; }
+.track-cover { width: 70px; height: 70px; flex-basis: 70px; border-radius: 12px; }
+.track-title { color: #edf3f6; font-size: 12px; line-height: 1.45; }
+.track-meta { color: #8d9ca8; font-size: 9px; }
+.track-badge { border-color: rgba(99, 223, 189, .25); background: rgba(22, 76, 62, .24); color: #91e8cc; }
+.track audio { height: 38px; margin: 10px 0 8px; }
+.download { min-height: 36px; border-color: rgba(173, 196, 209, .17); border-radius: 9px; background: #17232d; color: #d5e0e6; font-size: 10px; }
+.download:hover { border-color: var(--mint); color: var(--mint); }
+.lyrics { border-color: rgba(173, 196, 209, .13); }
+.lyrics summary { color: #8de5c8; font-size: 11px; }
+.lyrics-content { border-color: rgba(173, 196, 209, .13); border-radius: 10px; background: #080e13; color: #d0dae1; font-size: 11px; }
+main.app .recover {
+  margin-top: 13px;
+  padding: 12px;
+  border-color: rgba(173, 196, 209, .13);
+  border-radius: 12px;
+  background: rgba(9, 15, 21, .68);
+}
+main.app .recover label { margin-bottom: 7px; color: #d8e2e7; font-size: 11px; }
+main.app .recover input { min-height: 38px; border-color: rgba(173, 196, 209, .18); border-radius: 9px; background: #080e14; font-size: 10px; }
+main.app .recover button { min-height: 38px; border-color: rgba(173, 196, 209, .17); border-radius: 9px; background: #17232d; font-size: 10px; }
+main.app .recover-hint { color: #8494a0; font-size: 9px; line-height: 1.5; }
+.footnote { margin-top: 18px; color: #74838f; font-size: 9px; }
+.toast { max-width: min(92vw, 540px); text-align: center; line-height: 1.45; }
+
+@media (max-width: 760px) {
+  .app { padding: 14px 18px calc(94px + env(safe-area-inset-bottom)); }
+  .topbar { min-height: 54px; padding: 2px 0 13px; margin-bottom: 8px; }
+  .hero { grid-template-columns: 1fr; gap: 13px; margin: 7px 0 16px; }
+  .hero-copy { padding: 10px 1px 3px; }
+  .hero h1 { max-width: 520px; margin: 9px 0 9px; font-size: clamp(34px, 8.5vw, 44px); letter-spacing: -.05em; }
+  .hero-copy p { max-width: 520px; font-size: 12px; line-height: 1.6; }
+  .hero-art { min-height: 132px; max-height: 150px; border-radius: 17px; }
+  .wave { height: 100px; }
+  .art-caption { left: 14px; bottom: 11px; font-size: 8px; }
+  main.app > .account-panel { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-bottom: 15px; padding: 15px; border-radius: 16px; }
+  main.app .account-description { max-width: 100%; }
+  main.app .auth-actions { width: 100%; }
+  main.app .email-auth-form { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+  main.app .email-auth-buttons { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+  main.app .email-auth-buttons button { width: 100%; padding-inline: 10px; }
+  .workspace { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .composer { padding: 19px; }
+  .section-head { margin-bottom: 16px; }
+  textarea { min-height: 132px; font-size: 13px; }
+  .chips { gap: 6px; margin: 12px 0 15px; }
+  .chip { min-height: 30px; padding: 6px 9px; font-size: 10px; }
+  .options { gap: 10px; }
+  .side { grid-row: auto; gap: 12px; }
+  .side > .mini-card { display: none; }
+  .results { padding: 16px; }
+  .bottom-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 7px 12px calc(6px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(173, 196, 209, .13);
+    background: rgba(10, 15, 20, .94);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, .2);
+    backdrop-filter: blur(18px);
+  }
+  .nav-btn { min-height: 46px; gap: 2px; font-size: 9px; }
+  .nav-btn svg { width: 19px; height: 19px; }
+  .footnote { margin-top: 14px; }
+}
+
+@media (max-width: 420px) {
+  .app { padding-left: 14px; padding-right: 14px; }
+  .brand-mark { width: 39px; height: 39px; }
+  .brand-name { font-size: 17px; }
+  .brand-sub { font-size: 10px; }
+  .server-pill { gap: 6px; padding: 7px 9px; font-size: 9px; }
+  .hero h1 { font-size: 34px; }
+  .composer { padding: 16px; }
+  .section-head h2 { font-size: 17px; }
+  .step { padding: 5px 8px; font-size: 9px; }
+  .options { align-items: stretch; flex-direction: column; }
+  .model-field { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .model-field select { width: 100%; min-width: 0; }
+  main.app .recover-controls { flex-direction: column; }
+  main.app .recover-controls button { width: 100%; }
+  .track-cover { width: 60px; height: 60px; flex-basis: 60px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

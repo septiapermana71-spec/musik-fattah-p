@@ -15,6 +15,7 @@
   <style>
     .track-top{align-items:center}.track-cover{width:78px;height:78px;flex:0 0 78px;border-radius:14px;overflow:hidden;border:1px solid #344250;background:linear-gradient(145deg,#123c3b,#202048 62%,#43254d);display:grid;place-items:center;color:#73e9c5;font-size:30px}.track-cover img{width:100%;height:100%;object-fit:cover;display:block}.track-info{min-width:0;flex:1}.track-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.download{font:inherit}.download:disabled{opacity:.65;cursor:wait}.lyrics{margin-top:11px;border-top:1px solid #263441;padding-top:9px}.lyrics summary{cursor:pointer;color:#86e8c8;font-size:12px;font-weight:750;list-style:none}.lyrics summary::-webkit-details-marker{display:none}.lyrics summary:after{content:"＋";float:right;color:#91a1ae}.lyrics[open] summary:after{content:"−"}.lyrics-content{margin-top:9px;max-height:280px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#080e14;border:1px solid #263441;border-radius:11px;padding:12px;color:#d3dce4;font-size:12px;line-height:1.75}.lyrics-content.loading{color:#a8b6c1}.lyrics-content.error{color:#ff9cab}
   </style>
+  <link rel="stylesheet" href="./professional.css?v=1">
 </head>
 <body>
   <style>
@@ -46,7 +47,7 @@
           <path d="M0 83 C40 83 43 66 61 66 S83 96 102 96 123 51 143 51 159 105 179 105 201 69 220 69 241 94 261 94 282 55 301 55 323 107 343 107 365 65 384 65 402 93 421 93 442 45 461 45 485 105 503 105 528 79 560 79" opacity=".42"/>
           <path d="M0 74 C36 74 41 90 60 90 S81 58 100 58 122 91 141 91 163 69 182 69 203 84 223 84 245 61 264 61 285 98 304 98 326 67 345 67 366 86 386 86 407 53 426 53 449 93 468 93 490 68 509 68 534 82 560 82" opacity=".3"/>
         </svg>
-        <div class="art-caption">Your next sound starts here</div>
+        <div class="art-caption">IDEMU. JADI SUARA.</div>
       </div>
     </section>
 
@@ -54,7 +55,7 @@
       <section class="panel composer" id="composer">
         <div class="section-head">
           <div><h2>Racik lagu baru</h2><p>Jelaskan lagu yang ingin kamu dengar.</p></div>
-          <span class="step">01 / CREATE</span>
+          <span class="step">01 · RACIK</span>
         </div>
         <form id="generatorForm">
           <div class="label-row"><label class="label" for="prompt">Deskripsi lagu</label><span class="counter" id="counter">0 / 500</span></div>
@@ -94,7 +95,7 @@
         </section>
       </aside>
     </section>
-    <p class="footnote">FattahMusic · Prototype HTML terhubung ke server Render</p>
+    <p class="footnote">FattahMusic · Studio musik AI</p>
   </main>
 
   <nav class="bottom-nav" aria-label="Navigasi utama">
@@ -318,7 +319,7 @@
       configScript.src = './supabase-config.js';
       configScript.onload = () => {
         const loginScript = document.createElement('script');
-        loginScript.src = './supabase-login.js?v=4';
+        loginScript.src = './supabase-login.js?v=5';
         document.body.append(loginScript);
       };
       configScript.onerror = () => console.error('Supabase configuration failed to load.');
