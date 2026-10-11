@@ -9,8 +9,8 @@
   const topbar = document.querySelector('.topbar');
   if (topbar && !document.getElementById('accountPanel')) {
     topbar.insertAdjacentHTML('afterend', `<section class="account-panel" id="accountPanel" aria-label="Akun dan pustaka lagu">
-      <div class="account-copy"><div class="account-title">Akun &amp; pustaka lagu</div><p class="account-description">Masuk dengan email/kata sandi atau Google untuk menyimpan riwayat lagu di Supabase: prompt, Task ID, status, judul, tautan audio, dan sampul. Hanya akun Anda yang dapat membacanya.</p><p class="auth-message" id="authMessage">Menyiapkan login…</p></div>
-      <div class="auth-actions"><div id="loginArea" class="email-auth-form"><input class="email-field" id="authEmail" type="email" autocomplete="email" placeholder="Email" aria-label="Email"><input class="email-field" id="authPassword" type="password" autocomplete="current-password" placeholder="Kata sandi" aria-label="Kata sandi"><div class="email-auth-buttons"><button class="google-login" id="emailLoginBtn" type="button">Masuk Email</button><button class="logout-btn" id="emailSignupBtn" type="button">Daftar</button><button class="google-login" id="googleOAuthBtn" type="button">Masuk dengan Google</button></div></div><div class="account-user" id="profileArea" hidden><img class="account-avatar" id="userAvatar" alt="" hidden><div class="account-user-copy"><div class="account-user-name" id="userName"></div><div class="account-user-email" id="userEmail"></div></div><button class="logout-btn" id="logoutBtn" type="button">Keluar</button></div></div>
+      <div class="account-copy"><div class="account-title">Akun &amp; pustaka lagu</div><p class="account-description">Masuk dengan email dan kata sandi untuk menyimpan riwayat lagu di Supabase: prompt, Task ID, status, judul, tautan audio, dan sampul. Hanya akun Anda yang dapat membacanya.</p><p class="auth-message" id="authMessage">Menyiapkan login email…</p></div>
+      <div class="auth-actions"><div id="loginArea" class="email-auth-form"><input class="email-field" id="authEmail" type="email" autocomplete="email" placeholder="Email" aria-label="Email"><input class="email-field" id="authPassword" type="password" autocomplete="current-password" placeholder="Kata sandi" aria-label="Kata sandi"><div class="email-auth-buttons"><button class="google-login" id="emailLoginBtn" type="button">Masuk Email</button><button class="logout-btn" id="emailSignupBtn" type="button">Daftar</button></div></div><div class="account-user" id="profileArea" hidden><img class="account-avatar" id="userAvatar" alt="" hidden><div class="account-user-copy"><div class="account-user-name" id="userName"></div><div class="account-user-email" id="userEmail"></div></div><button class="logout-btn" id="logoutBtn" type="button">Keluar</button></div></div>
     </section>`);
   }
 
@@ -18,7 +18,6 @@
   const endpoint = document.querySelector('.endpoint')?.textContent.trim().replace(/\/$/, '') || 'https://musik-fattah-p.onrender.com';
   const loginButton = document.getElementById('emailLoginBtn');
   const signupButton = document.getElementById('emailSignupBtn');
-  const googleButton = document.getElementById('googleOAuthBtn');
   const logoutButton = document.getElementById('logoutBtn');
   const loginArea = document.getElementById('loginArea');
   const profileArea = document.getElementById('profileArea');
@@ -97,11 +96,11 @@
       loginArea.hidden = false;
       profileArea.hidden = true;
       clearTrackList();
-      message('Masuk dengan email/kata sandi atau Google untuk menyimpan lagu dan membuka pustaka Anda.');
+      message('Masuk dengan email dan kata sandi untuk menyimpan lagu dan membuka pustaka Anda.');
       return;
     }
     const metadata = currentUser.user_metadata || {};
-    document.getElementById('userName').textContent = metadata.full_name || metadata.name || currentUser.email || 'Pengguna Google';
+    document.getElementById('userName').textContent = metadata.full_name || metadata.name || currentUser.email || 'Pengguna';
     document.getElementById('userEmail').textContent = currentUser.email || '';
     const avatar = document.getElementById('userAvatar');
     const picture = metadata.avatar_url || metadata.picture || '';
@@ -191,7 +190,6 @@
   if (!window.supabase || !config.url || !config.key) {
     loginButton.disabled = true;
     signupButton.disabled = true;
-    googleButton.disabled = true;
     message('Konfigurasi Supabase belum tersedia untuk halaman ini.', true);
     return;
   }
@@ -241,25 +239,6 @@
     signupButton.disabled = false;
   });
 
-  googleButton.addEventListener('click', async () => {
-    googleButton.disabled = true;
-    message('Mengalihkan ke Google…');
-    const redirectTo = window.location.origin + window.location.pathname;
-    try {
-      const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo }
-      });
-      if (error) {
-        googleButton.disabled = false;
-        message('Google Login belum aktif di Supabase: ' + error.message, true);
-      }
-    } catch (error) {
-      googleButton.disabled = false;
-      message('Google Login belum aktif di Supabase: ' + (error.message || 'periksa konfigurasi OAuth.'), true);
-    }
-  });
-
   logoutButton.addEventListener('click', async () => {
     const { error } = await supabaseClient.auth.signOut();
     if (error) { message('Tidak dapat keluar: ' + error.message, true); return; }
@@ -271,7 +250,7 @@
     event.preventDefault();
     event.stopImmediatePropagation();
     if (!currentUser) {
-      message('Masuk dengan email atau Google dulu agar lagu tersimpan ke akun.', true);
+      message('Masuk dengan email dulu agar lagu tersimpan ke akun.', true);
       document.getElementById('accountPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
