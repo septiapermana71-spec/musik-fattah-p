@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080c12">
+  <meta name="description" content="FattahMusic — generator musik AI">
+  <title>FattahMusic — AI Music Generator</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080c12;--panel:#101721;--panel-2:#151e2a;--line:#263342;--muted:#92a0ae;--text:#f4f7fa;--mint:#4de5b4;--blue:#438cff;--purple:#ba6cff;--danger:#ff728b;--radius:22px;--shadow:0 22px 60px #0008}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#173b4735,transparent 40%),radial-gradient(ellipse at 0% 55%,#55296920,transparent 40%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}button,textarea,select{font:inherit}button{color:inherit}a{color:inherit}.app{max-width:1100px;margin:auto;padding:20px 24px 110px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 22px}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(140deg,#44e6b2,#508cff 75%,#c86dff);box-shadow:0 8px 26px #4de5b440}.brand-mark svg{width:27px;height:27px}.brand-name{font-weight:850;font-size:21px;letter-spacing:-.7px}.brand-sub{color:var(--muted);font-size:12px;margin-top:-2px}.server-pill{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:#101721cc;padding:9px 13px;color:#cbd5df;font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:#e6b94b;box-shadow:0 0 12px currentColor}.dot.ok{background:var(--mint)}.dot.bad{background:var(--danger)}.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch;margin:4px 0 24px}.hero-copy{padding:22px 4px 14px}.eyebrow{color:var(--mint);font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}.hero h1{font-size:clamp(32px,5vw,54px);line-height:1.03;letter-spacing:-2px;margin:12px 0 13px;max-width:580px}.gradient-text{background:linear-gradient(95deg,var(--mint),#6cbfff 55%,#c58cff);-webkit-background-clip:text;background-clip:text;color:transparent}.hero-copy p{color:#a9b5c0;max-width:470px;margin:0}.hero-art{border:1px solid #ffffff14;border-radius:26px;min-height:190px;overflow:hidden;position:relative;background:linear-gradient(130deg,#10252f,#16122c 60%,#25133c);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center}.hero-art:before,.hero-art:after{content:"";position:absolute;width:210px;height:210px;border-radius:50%;filter:blur(65px);opacity:.46}.hero-art:before{background:#26dcb1;left:-65px;top:20px}.hero-art:after{background:#914dff;right:-40px;bottom:-100px}.wave{width:88%;height:145px;position:relative;z-index:1}.wave path{fill:none;stroke:url(#waveGrad);stroke-width:2.3;stroke-linecap:round;opacity:.82}.art-caption{position:absolute;z-index:2;left:20px;bottom:15px;color:#d8e3eb;font-size:11px;letter-spacing:1px;text-transform:uppercase}.workspace{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(285px,.8fr);gap:22px;align-items:start}.panel{background:linear-gradient(155deg,#111a25f5,#0e151ef5);border:1px solid #293542;border-radius:var(--radius);box-shadow:var(--shadow)}.composer{padding:22px}.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}.section-head h2{margin:0;font-size:20px;letter-spacing:-.5px}.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.step{font-size:11px;color:#c3d0dc;background:#1b2632;border:1px solid #2e3b49;padding:6px 10px;border-radius:999px;white-space:nowrap}.label-row{display:flex;justify-content:space-between;align-items:center;margin:0 0 9px}.label{font-size:13px;font-weight:750}.counter{font-size:11px;color:var(--muted)}textarea{width:100%;min-height:142px;resize:vertical;border:1px solid #3a4857;border-radius:18px;background:#080d13;color:var(--text);padding:16px;outline:none;line-height:1.65;transition:border-color .18s,box-shadow .18s}textarea:focus,select:focus{border-color:#4de5b4;box-shadow:0 0 0 3px #4de5b41f}.textarea-hint{font-size:11px;color:#8493a2;margin-top:7px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0 20px}.chip{border:1px solid #344250;border-radius:999px;padding:7px 11px;color:#b9c7d3;background:#121c27;font-size:12px;cursor:pointer;transition:.15s}.chip:hover,.chip.active{border-color:#46dcb0;color:#82f4d0;background:#13332f}.options{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-top:1px solid #263340;border-bottom:1px solid #263340}.toggle-wrap{display:flex;align-items:center;gap:10px;cursor:pointer}.toggle{appearance:none;width:42px;height:24px;border:1px solid #526170;border-radius:999px;background:#29333e;position:relative;cursor:pointer;transition:.18s;margin:0}.toggle:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;border-radius:50%;background:#b7c1cb;transition:.18s}.toggle:checked{background:#178d74;border-color:#40d9ad}.toggle:checked:before{transform:translateX(17px);background:white}.toggle-title{font-size:13px;font-weight:700}.toggle-sub{font-size:11px;color:var(--muted)}.model-field{display:grid;gap:5px}.model-field label{font-size:11px;color:var(--muted)}select{background:#111b25;color:var(--text);border:1px solid #354351;border-radius:11px;padding:9px 11px;min-width:100px;outline:none}.quota-note{display:flex;gap:9px;align-items:flex-start;color:#c5b58b;background:#2c241329;border:1px solid #8d723438;border-radius:12px;padding:10px 12px;margin:15px 0 14px;font-size:11px}.quota-note svg{width:16px;height:16px;flex:0 0 auto;margin-top:1px;color:#edc66c}.generate{width:100%;border:0;border-radius:15px;padding:14px 18px;background:linear-gradient(100deg,#42dfb0,#438dff);font-size:15px;font-weight:850;color:#06141a;cursor:pointer;box-shadow:0 10px 28px #438dff32;transition:transform .15s,filter .15s}.generate:hover{transform:translateY(-1px);filter:brightness(1.07)}.generate:disabled{cursor:wait;opacity:.65;transform:none}.btn-caption{display:block;font-size:10px;font-weight:600;opacity:.76;margin-top:2px}.status{display:none;margin-top:15px;border:1px solid #324251;border-radius:14px;padding:13px;background:#0b1118}.status.show{display:block}.status-line{display:flex;align-items:center;gap:9px;font-weight:700;font-size:13px}.spinner{width:16px;height:16px;border:2px solid #40505d;border-top-color:var(--mint);border-radius:50%;animation:spin .8s linear infinite}.status-text{color:#a7b5c0;font-size:11px;margin-top:5px;overflow-wrap:anywhere}.status.error{border-color:#873c4e;background:#251219}.status.error .status-line{color:#ff9cab}.progress{height:4px;border-radius:9px;background:#25323f;overflow:hidden;margin-top:11px}.progress>i{display:block;height:100%;width:32%;background:linear-gradient(90deg,var(--mint),var(--blue));border-radius:9px;animation:load 1.8s ease-in-out infinite}.side{display:grid;gap:16px}.mini-card{padding:19px}.mini-title{font-size:14px;font-weight:800;margin:0 0 4px}.mini-copy{font-size:12px;color:var(--muted);margin:0 0 13px}.endpoint{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#a6e9d5;background:#0a1117;border:1px solid #263441;border-radius:10px;padding:10px;overflow-wrap:anywhere}.server-check{display:flex;align-items:center;gap:9px;font-size:12px;color:#c5d2dd;margin-top:12px}.results{padding:20px;min-height:150px}.results-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.results-head h2{font-size:18px;margin:0}.result-count{font-size:11px;color:#aebcc8;background:#1b2733;border-radius:999px;padding:5px 9px}.empty{border:1px dashed #344250;border-radius:16px;padding:20px;text-align:center;color:#8c9ba9;font-size:12px}.empty-icon{width:38px;height:38px;border-radius:13px;margin:0 auto 9px;display:grid;place-items:center;background:#15212a;color:#6edbb9}.track{border:1px solid #2b3947;border-radius:16px;background:#0b121a;padding:14px;margin-top:11px}.track-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}.track-title{font-size:13px;font-weight:800}.track-meta{font-size:10px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}.track-badge{font-size:10px;color:#79e7c1;border:1px solid #286553;background:#102b25;padding:4px 8px;border-radius:999px;white-space:nowrap}.track audio{display:block;width:100%;height:38px;margin:8px 0}.download{display:inline-flex;align-items:center;gap:7px;text-decoration:none;border:1px solid #3b4b59;background:#14202b;color:#d4e0e9;border-radius:10px;padding:8px 11px;font-size:11px;font-weight:750;cursor:pointer}.download:hover{border-color:var(--mint);color:var(--mint)}.footnote{text-align:center;color:#71808d;font-size:10px;margin-top:20px}.bottom-nav{display:none}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#e3fff5;color:#092018;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:700;box-shadow:var(--shadow);transition:.2s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}@keyframes spin{to{transform:rotate(360deg)}}@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}
+    @media(max-width:760px){.app{padding:14px 16px calc(98px + env(safe-area-inset-bottom))}.topbar{padding:5px 0 18px}.hero{grid-template-columns:1fr;gap:15px;margin-bottom:17px}.hero-copy{padding:10px 2px 0}.hero h1{font-size:37px}.hero-art{min-height:125px}.wave{height:108px}.workspace{grid-template-columns:1fr;gap:14px}.composer{padding:17px}.side{grid-row:2}.results{padding:17px}.bottom-nav{position:fixed;display:grid;grid-template-columns:repeat(3,1fr);left:0;right:0;bottom:0;padding:9px 10px calc(8px + env(safe-area-inset-bottom));background:#0c1218f2;border-top:1px solid #26333e;backdrop-filter:blur(18px);z-index:10}.nav-btn{border:0;background:transparent;color:#81909e;display:grid;justify-items:center;gap:3px;font-size:10px;padding:5px;cursor:pointer}.nav-btn svg{width:21px;height:21px}.nav-btn.active{color:var(--mint)}.server-pill{font-size:10px;padding:8px 10px}.brand-name{font-size:19px}}
+    @media(max-width:380px){.app{padding-left:12px;padding-right:12px}.hero h1{font-size:32px}.options{align-items:flex-start}.model-field select{min-width:86px}.server-pill{gap:6px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M5 17h3l2.2-7 4.1 14 3.5-19L22 22l2.7-8 2.3 3h2" stroke="#07141a" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><div class="brand-name">Fattah<span class="gradient-text">Music</span></div><div class="brand-sub">AI Music Generator</div></div>
+      </div>
+      <div class="server-pill" title="Status koneksi backend">
+        <span class="dot" id="serverDot"></span><span id="serverLabel">Memeriksa server…</span>
+      </div>
+    </header>
+
+    <section class="hero" aria-label="Perkenalan">
+      <div class="hero-copy">
+        <div class="eyebrow">Studio musik AI</div>
+        <h1>Ubah ide jadi <span class="gradient-text">suara.</span></h1>
+        <p>Tulis suasana, genre, dan vokal yang kamu mau. FattahMusic akan meracik lagu melalui server AI.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg class="wave" viewBox="0 0 560 150" preserveAspectRatio="none">
+          <defs><linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#54ecc1"/><stop offset=".52" stop-color="#59a6ff"/><stop offset="1" stop-color="#d37cff"/></linearGradient></defs>
+          <path d="M0 76 C30 76 25 47 45 47 S60 105 80 105 96 27 114 27 133 126 151 126 168 54 187 54 204 91 222 91 239 36 257 36 273 113 293 113 309 60 327 60 346 95 364 95 381 22 400 22 417 125 436 125 452 52 472 52 490 88 506 88 527 69 560 69"/>
+          <path d="M0 83 C40 83 43 66 61 66 S83 96 102 96 123 51 143 51 159 105 179 105 201 69 220 69 241 94 261 94 282 55 301 55 323 107 343 107 365 65 384 65 402 93 421 93 442 45 461 45 485 105 503 105 528 79 560 79" opacity=".42"/>
+          <path d="M0 74 C36 74 41 90 60 90 S81 58 100 58 122 91 141 91 163 69 182 69 203 84 223 84 245 61 264 61 285 98 304 98 326 67 345 67 366 86 386 86 407 53 426 53 449 93 468 93 490 68 509 68 534 82 560 82" opacity=".3"/>
+        </svg>
+        <div class="art-caption">Your next sound starts here</div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <section class="panel composer" id="composer">
+        <div class="section-head">
+          <div><h2>Racik lagu baru</h2><p>Jelaskan lagu yang ingin kamu dengar.</p></div>
+          <span class="step">01 / CREATE</span>
+        </div>
+        <form id="generatorForm">
+          <div class="label-row"><label class="label" for="prompt">Deskripsi lagu</label><span class="counter" id="counter">0 / 500</span></div>
+          <textarea id="prompt" maxlength="500" required placeholder="Contoh: reggae Jawa santai, vokal wanita, gitar hangat dan kendang koplo…">musik santai hari ini reggae jawa koplo vokal wanita</textarea>
+          <div class="textarea-hint">Detail suasana dan instrumen membantu AI memahami idemu.</div>
+          <div class="chips" aria-label="Saran gaya">
+            <button class="chip" type="button" data-add="reggae Jawa">Reggae Jawa</button>
+            <button class="chip" type="button" data-add="irama koplo santai">Koplo santai</button>
+            <button class="chip" type="button" data-add="vokal wanita">Vokal wanita</button>
+            <button class="chip" type="button" data-add="gitar ritmis dan kendang">Gitar + kendang</button>
+          </div>
+          <div class="options">
+            <label class="toggle-wrap" for="instrumental">
+              <input class="toggle" type="checkbox" id="instrumental">
+              <span><span class="toggle-title">Instrumental saja</span><br><span class="toggle-sub">Tanpa vokal</span></span>
+            </label>
+            <div class="model-field"><label for="model">Model musik</label><select id="model"><option value="V6" selected>Suno V6</option><option value="V4_5">Suno V4.5</option></select></div>
+          </div>
+          <div class="quota-note"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 2.9 19h18.2L12 3Z" stroke="currentColor" stroke-width="1.7"/><path d="M12 9v4m0 3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Generate mengirim permintaan ke server dan memakai kuota SunoAPI. Jangan tekan berulang kali saat proses berjalan.</span></div>
+          <button class="generate" id="generateBtn" type="submit">Buat lagu <span aria-hidden="true">↗</span><span class="btn-caption">Terhubung ke server Musik Fattah</span></button>
+          <div class="status" id="statusBox" role="status" aria-live="polite"><div class="status-line"><span class="spinner" id="statusSpinner"></span><span id="statusTitle">Menyiapkan permintaan…</span></div><div class="status-text" id="statusText"></div><div class="progress" id="progress"><i></i></div></div>
+        </form>
+      </section>
+
+      <aside class="side">
+        <section class="panel mini-card">
+          <h3 class="mini-title">Server aktif</h3>
+          <p class="mini-copy">Semua permintaan musik dikirim lewat backend. API key tidak disimpan di halaman ini.</p>
+          <div class="endpoint">https://musik-fattah-p.onrender.com</div>
+          <div class="server-check"><span class="dot" id="sideDot"></span><span id="sideServerLabel">Mengecek koneksi…</span></div>
+        </section>
+        <section class="panel results" id="results">
+          <div class="results-head"><h2>Hasil lagu</h2><span class="result-count" id="resultCount">0 track</span></div>
+          <div class="empty" id="emptyState"><div class="empty-icon"><svg viewBox="0 0 24 24" width="21" height="21" fill="none"><path d="M9 18V5l12-2v13M9 18c0 1.1-1.6 2-3.5 2S2 19.1 2 18s1.6-2 3.5-2S9 16.9 9 18Zm12-2c0 1.1-1.6 2-3.5 2S14 17.1 14 16s1.6-2 3.5-2 3.5.9 3.5 2ZM9 9l12-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Belum ada lagu. Tulis ide dan tekan <b>Buat lagu</b>.</div>
+          <div id="trackList"></div>
+        </section>
+      </aside>
+    </section>
+    <p class="footnote">FattahMusic · Prototype HTML terhubung ke server Render</p>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <button class="nav-btn active" data-target="composer" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7L12 2Zm7 13 .9 3.1L23 19l-3.1.9L19 23l-.9-3.1L15 19l3.1-.9L19 15Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Buat</button>
+    <button class="nav-btn" data-target="results" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13M9 18c0 1.1-1.6 2-3.5 2S2 19.1 2 18s1.6-2 3.5-2S9 16.9 9 18Zm12-2c0 1.1-1.6 2-3.5 2S14 17.1 14 16s1.6-2 3.5-2 3.5.9 3.5 2Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Lagu</button>
+    <button class="nav-btn" id="serverNav" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="1.7"/><path d="m19.4 15 .1.1 1.2 1-1.5 2.6-1.5-.6a7.8 7.8 0 0 1-1.6.9l-.3 1.6h-3l-.3-1.6a7.8 7.8 0 0 1-1.6-.9l-1.5.6-1.5-2.6 1.2-1a7.1 7.1 0 0 1 0-1.9l-1.2-1 1.5-2.6 1.5.6a7.8 7.8 0 0 1 1.6-.9l.3-1.6h3l.3 1.6a7.8 7.8 0 0 1 1.6.9l1.5-.6 1.5 2.6-1.2 1a7.1 7.1 0 0 1 0 1.9Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Server</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    'use strict';
+    const API_BASE = 'https://musik-fattah-p.onrender.com';
+    const $ = (id) => document.getElementById(id);
+    const promptEl = $('prompt');
+    const form = $('generatorForm');
+    const button = $('generateBtn');
+    let toastTimer;
+
+    function setServer(ok, label) {
+      $('serverDot').className = 'dot ' + (ok ? 'ok' : 'bad');
+      $('sideDot').className = 'dot ' + (ok ? 'ok' : 'bad');
+      $('serverLabel').textContent = label;
+      $('sideServerLabel').textContent = label;
+    }
+    async function checkHealth() {
+      try {
+        const r = await fetch(API_BASE + '/health', {method:'GET', headers:{'Accept':'application/json'}});
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        setServer(data.status === 'ok', data.status === 'ok' ? 'Server aktif' : 'Server merespons');
+      } catch (e) {
+        setServer(false, 'Koneksi belum tersedia');
+        console.warn('Health check failed:', e);
+      }
+    }
+    function showStatus(title, text='', state='loading') {
+      const box = $('statusBox'); box.className = 'status show' + (state === 'error' ? ' error' : '');
+      $('statusTitle').textContent = title; $('statusText').textContent = text;
+      $('statusSpinner').style.display = state === 'loading' ? 'block' : 'none';
+      $('progress').style.display = state === 'loading' ? 'block' : 'none';
+    }
+    function toast(message) {
+      const el = $('toast'); el.textContent = message; el.classList.add('show');
+      clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+    }
+    function findTaskId(obj) {
+      if (!obj || typeof obj !== 'object') return null;
+      if (typeof obj.taskId === 'string' && obj.taskId) return obj.taskId;
+      if (typeof obj.task_id === 'string' && obj.task_id) return obj.task_id;
+      for (const value of Object.values(obj)) {
+        if (value && typeof value === 'object') { const found = findTaskId(value); if (found) return found; }
+      }
+      return null;
+    }
+    function collectTracks(obj, found=[]) {
+      if (!obj || typeof obj !== 'object') return found;
+      if (Array.isArray(obj)) { obj.forEach(x => collectTracks(x, found)); return found; }
+      const url = obj.audioUrl || obj.audio_url || obj.streamAudioUrl || obj.stream_audio_url;
+      if (typeof url === 'string' && /^https?:\/\//i.test(url) && !found.some(x => x.url === url)) {
+        found.push({url, title: obj.title || obj.name || '', id: obj.audioId || obj.id || ''});
+      }
+      Object.values(obj).forEach(v => { if (v && typeof v === 'object') collectTracks(v, found); });
+      return found;
+    }
+    function findFailure(obj) {
+      if (!obj || typeof obj !== 'object') return null;
+      if (Array.isArray(obj)) { for (const x of obj) { const f=findFailure(x); if(f)return f; } return null; }
+      const state = String(obj.status || obj.state || obj.callbackType || '').toLowerCase();
+      if (['failed','error','failure'].includes(state)) return obj.msg || obj.errorMessage || state;
+      for (const v of Object.values(obj)) { if (v && typeof v === 'object') { const f=findFailure(v); if(f)return f; } }
+      return null;
+    }
+    function renderTracks(tracks) {
+      $('emptyState').style.display = 'none';
+      $('resultCount').textContent = tracks.length + (tracks.length === 1 ? ' track' : ' track');
+      $('trackList').innerHTML = '';
+      tracks.forEach((track, index) => {
+        const card = document.createElement('article'); card.className = 'track';
+        const title = track.title || `Lagu AI · Versi ${index+1}`;
+        const top = document.createElement('div'); top.className = 'track-top';
+        const info = document.createElement('div');
+        const t = document.createElement('div'); t.className='track-title'; t.textContent=title;
+        const meta = document.createElement('div'); meta.className='track-meta'; meta.textContent=track.id ? `Audio ID: ${track.id}` : 'Hasil dari SunoAPI';
+        info.append(t,meta);
+        const badge=document.createElement('span'); badge.className='track-badge'; badge.textContent='Selesai'; top.append(info,badge);
+        const audio=document.createElement('audio'); audio.controls=true; audio.preload='none'; audio.src=track.url;
+        const download=document.createElement('a'); download.className='download'; download.href=track.url; download.target='_blank'; download.rel='noopener'; download.setAttribute('download',`fattahmusic-versi-${index+1}.mp3`); download.textContent='↓  Buka / unduh audio';
+        card.append(top,audio,download); $('trackList').append(card);
+      });
+    }
+    async function readJson(response) {
+      const text = await response.text();
+      try { return text ? JSON.parse(text) : {}; }
+      catch { return {raw:text.slice(0,1200)}; }
+    }
+    async function pollTask(taskId) {
+      const maxAttempts = 60;
+      for (let i=0; i<maxAttempts; i++) {
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        showStatus('Meracik lagu…', `Memeriksa hasil · ${Math.min((i+1)*10,600)} detik`);
+        const r = await fetch(`${API_BASE}/record-info/${encodeURIComponent(taskId)}`, {headers:{'Accept':'application/json'}});
+        const body = await readJson(r);
+        if (!r.ok) throw new Error(`Cek status HTTP ${r.status}: ${JSON.stringify(body).slice(0,350)}`);
+        const tracks = collectTracks(body);
+        if (tracks.length) { renderTracks(tracks); showStatus('Lagu selesai', `${tracks.length} hasil tersedia untuk diputar atau diunduh.`, 'done'); return; }
+        const fail = findFailure(body);
+        if (fail) throw new Error('SunoAPI gagal: ' + fail);
+      }
+      throw new Error('Waktu tunggu habis. Task masih diproses; coba cek lagi nanti.');
+    }
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const prompt = promptEl.value.trim();
+      if (!prompt) { promptEl.focus(); toast('Tulis deskripsi lagu terlebih dahulu.'); return; }
+      if (!window.confirm('Permintaan ini akan memakai kuota SunoAPI. Lanjutkan?')) return;
+      button.disabled = true; showStatus('Mengirim permintaan…', 'Menghubungi server Musik Fattah.');
+      try {
+        const response = await fetch(API_BASE + '/generate-music', {
+          method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+          body:JSON.stringify({prompt, instrumental:$('instrumental').checked, customMode:false, model:$('model').value})
+        });
+        const body = await readJson(response);
+        if (!response.ok) throw new Error(`Generate HTTP ${response.status}: ${JSON.stringify(body).slice(0,500)}`);
+        const taskId = findTaskId(body);
+        if (!taskId) throw new Error('Server belum mengirim task ID. Respons: ' + JSON.stringify(body).slice(0,700));
+        showStatus('Task diterima', `ID ${taskId} · menunggu audio selesai…`);
+        await pollTask(taskId);
+        $('results').scrollIntoView({behavior:'smooth',block:'start'});
+      } catch (e) {
+        console.error(e); showStatus('Generate belum berhasil', e.message || 'Periksa koneksi server lalu coba lagi.', 'error');
+      } finally { button.disabled = false; }
+    });
+    promptEl.addEventListener('input', () => $('counter').textContent = `${promptEl.value.length} / 500`);
+    document.querySelectorAll('[data-add]').forEach(chip => chip.addEventListener('click', () => {
+      const phrase = chip.dataset.add;
+      if (!promptEl.value.toLowerCase().includes(phrase.toLowerCase())) promptEl.value = (promptEl.value.trim().replace(/[,. ]+$/,'') + ', ' + phrase).slice(0,500);
+      promptEl.dispatchEvent(new Event('input')); promptEl.focus(); chip.classList.add('active'); setTimeout(()=>chip.classList.remove('active'),700);
+    }));
+    document.querySelectorAll('.nav-btn[data-target]').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active');
+      $(btn.dataset.target).scrollIntoView({behavior:'smooth',block:'start'});
+    }));
+    $('serverNav').addEventListener('click', async () => { await checkHealth(); toast($('serverLabel').textContent); });
+    $('counter').textContent = `${promptEl.value.length} / 500`;
+    checkHealth();
+  </script>
+</body>
+</html>

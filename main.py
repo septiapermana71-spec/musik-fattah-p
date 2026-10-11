@@ -3,6 +3,7 @@ import httpx
 import requests
 import psycopg2
 from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
@@ -37,6 +38,13 @@ VIDEO_URL = f"{SUNO_BASE_API}/mp4/generate"
 app = FastAPI(
     title="AI Music Suno API Wrapper",
     version="2.0.0"
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://septiapermana71-spec.github.io"],
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
 )
 
 # ==================================================
