@@ -148,21 +148,27 @@ async def callback(request: Request):
 
     try:
         task_id = data.get("taskId") or data.get("task_id")
-        items = data.get("data") or []
+        callback_type = data.get("callbackType") or data.get("callback_type")
+        raw_items = data.get("data") or data.get("sunoData") or []
+        items = raw_items if isinstance(raw_items, list) else [raw_items]
+
+        if callback_type == "error" or data.get("code", 200) != 200:
+            return {"status": "failed", "message": data.get("msg") or data.get("errorMessage")}
 
         if not items:
             return {"status": "ignored"}
 
         item = items[0]
-        state = item.get("state") or item.get("status")
+        state = callback_type or item.get("state") or item.get("status")
 
-        if state != "succeeded":
+        if state not in ["succeeded", "success", "first", "complete"]:
             return {"status": "processing"}
 
         audio_url = (
             item.get("audioUrl")
             or item.get("audio_url")
             or item.get("streamAudioUrl")
+            or item.get("stream_audio_url")
         )
 
         video_url = (
@@ -174,8 +180,8 @@ async def callback(request: Request):
         # ================= AUDIO CALLBACK =================
         if audio_url:
 
-            audio_id = item.get("audioId")
-            image_url = item.get("imageUrl")
+            audio_id = item.get("audioId") or item.get("id")
+            image_url = item.get("imageUrl") or item.get("image_url")
             title = item.get("title", "Untitled")
 
             conn = get_conn()
