@@ -234,6 +234,8 @@ select { min-height: 38px; border-color: rgba(173, 196, 209, .18); border-radius
 .track audio { height: 38px; margin: 10px 0 8px; }
 .download { min-height: 36px; border-color: rgba(173, 196, 209, .17); border-radius: 9px; background: #17232d; color: #d5e0e6; font-size: 10px; }
 .download:hover { border-color: var(--mint); color: var(--mint); }
+.download.video-download { border-color: rgba(130, 170, 255, .25); background: rgba(35, 48, 69, .72); color: #c3d2ff; }
+.download.video-download:hover { border-color: var(--blue); color: #e2eaff; }
 .lyrics { border-color: rgba(173, 196, 209, .13); }
 .lyrics summary { color: #8de5c8; font-size: 11px; }
 .lyrics-content { border-color: rgba(173, 196, 209, .13); border-radius: 10px; background: #080e13; color: #d0dae1; font-size: 11px; }

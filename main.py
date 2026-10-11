@@ -4,7 +4,7 @@ import requests
 import psycopg2
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
@@ -251,6 +251,30 @@ async def download_music(task_id: str, audioId: Optional[str] = None):
         content=audio_res.content,
         media_type=media_type,
         headers={"Content-Disposition": 'attachment; filename="FattahMusic.mp3"', "Cache-Control": "no-store"}
+    )
+
+# ================= VIDEO DOWNLOAD =================
+def local_video_path(task_id: str) -> str:
+    if not task_id or len(task_id) > 180 or not all(ch.isalnum() or ch in "-_" for ch in task_id):
+        raise HTTPException(400, "Task ID tidak valid")
+    return os.path.join("media", f"{task_id}.mp4")
+
+@app.get("/video-status/{task_id}")
+def video_status(task_id: str):
+    path = local_video_path(task_id)
+    ready = os.path.isfile(path) and os.path.getsize(path) > 0
+    return {"ready": ready}
+
+@app.get("/download-video/{task_id}")
+def download_video(task_id: str):
+    path = local_video_path(task_id)
+    if not os.path.isfile(path) or os.path.getsize(path) <= 0:
+        raise HTTPException(404, "MP4 belum siap. Coba lagi setelah video selesai diproses.")
+    return FileResponse(
+        path,
+        media_type="video/mp4",
+        filename=f"FattahMusic-{task_id}.mp4",
+        headers={"Cache-Control": "no-store"}
     )
 
 # ================= CALLBACK =================

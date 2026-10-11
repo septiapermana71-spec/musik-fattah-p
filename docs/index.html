@@ -15,7 +15,7 @@
   <style>
     .track-top{align-items:center}.track-cover{width:78px;height:78px;flex:0 0 78px;border-radius:14px;overflow:hidden;border:1px solid #344250;background:linear-gradient(145deg,#123c3b,#202048 62%,#43254d);display:grid;place-items:center;color:#73e9c5;font-size:30px}.track-cover img{width:100%;height:100%;object-fit:cover;display:block}.track-info{min-width:0;flex:1}.track-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.download{font:inherit}.download:disabled{opacity:.65;cursor:wait}.lyrics{margin-top:11px;border-top:1px solid #263441;padding-top:9px}.lyrics summary{cursor:pointer;color:#86e8c8;font-size:12px;font-weight:750;list-style:none}.lyrics summary::-webkit-details-marker{display:none}.lyrics summary:after{content:"＋";float:right;color:#91a1ae}.lyrics[open] summary:after{content:"−"}.lyrics-content{margin-top:9px;max-height:280px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#080e14;border:1px solid #263441;border-radius:11px;padding:12px;color:#d3dce4;font-size:12px;line-height:1.75}.lyrics-content.loading{color:#a8b6c1}.lyrics-content.error{color:#ff9cab}
   </style>
-  <link rel="stylesheet" href="./professional.css?v=1">
+  <link rel="stylesheet" href="./professional.css?v=2">
 </head>
 <body>
   <style>
@@ -204,6 +204,7 @@
       $('emptyState').style.display = 'none';
       $('resultCount').textContent = `${tracks.length} track`;
       $('trackList').innerHTML = '';
+      const videoTaskIds = new Set();
       tracks.forEach((track, index) => {
         const card = document.createElement('article'); card.className = 'track';
         const title = track.title || `Lagu AI · Versi ${index+1}`;
@@ -232,6 +233,27 @@
           finally { download.disabled=false; download.textContent='↓  Unduh MP3'; }
         });
         actions.append(download);
+        if (track.taskId && !videoTaskIds.has(track.taskId)) {
+          videoTaskIds.add(track.taskId);
+          const mp4 = document.createElement('button'); mp4.type = 'button'; mp4.className = 'download video-download'; mp4.textContent = 'Unduh MP4';
+          mp4.title = 'Video MP4 diproses otomatis oleh server setelah audio selesai.';
+          mp4.addEventListener('click', async () => {
+            mp4.disabled = true; mp4.textContent = 'Memeriksa MP4…';
+            try {
+              const statusResponse = await fetch(`${API_BASE}/video-status/${encodeURIComponent(track.taskId)}`, {headers:{'Accept':'application/json'}, cache:'no-store'});
+              const status = await readJson(statusResponse);
+              if (!statusResponse.ok) throw new Error(typeof status.detail === 'string' ? status.detail : `HTTP ${statusResponse.status}`);
+              if (!status.ready) { toast('MP4 masih diproses. Coba lagi beberapa saat lagi.'); return; }
+              const link = document.createElement('a');
+              link.href = `${API_BASE}/download-video/${encodeURIComponent(track.taskId)}`;
+              link.rel = 'noopener'; document.body.append(link); link.click(); link.remove();
+              toast('Unduhan MP4 dimulai.');
+            } catch (error) {
+              toast('MP4 belum dapat diunduh: ' + (error.message || 'periksa koneksi server.'));
+            } finally { mp4.disabled = false; mp4.textContent = 'Unduh MP4'; }
+          });
+          actions.append(mp4);
+        }
         const lyricsBox=document.createElement('details'); lyricsBox.className='lyrics';
         const summary=document.createElement('summary'); summary.textContent='Lihat lirik';
         const lyricContent=document.createElement('div'); lyricContent.className='lyrics-content'; lyricContent.textContent='Buka untuk meminta lirik dari server.';
@@ -253,7 +275,7 @@
         const body = await readJson(r);
         if (!r.ok) throw new Error(`Cek status HTTP ${r.status}: ${JSON.stringify(body).slice(0,350)}`);
         const tracks = collectTracks(body, taskId);
-        if (tracks.length) { renderTracks(tracks); showStatus('Lagu selesai', `${tracks.length} hasil tersedia dengan sampul, opsi lirik, dan unduhan MP3.`, 'done'); return; }
+        if (tracks.length) { renderTracks(tracks); showStatus('Lagu selesai', `${tracks.length} hasil tersedia. Video MP4 dapat diunduh jika sudah selesai diproses.`, 'done'); return; }
         const fail = findFailure(body);
         if (fail) throw new Error('SunoAPI gagal: ' + fail);
       }
@@ -319,7 +341,7 @@
       configScript.src = './supabase-config.js';
       configScript.onload = () => {
         const loginScript = document.createElement('script');
-        loginScript.src = './supabase-login.js?v=5';
+        loginScript.src = './supabase-login.js?v=6';
         document.body.append(loginScript);
       };
       configScript.onerror = () => console.error('Supabase configuration failed to load.');
