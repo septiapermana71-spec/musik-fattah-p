@@ -65,6 +65,33 @@ def suno_headers():
         "Content-Type": "application/json"
     }
 
+def normalize_task_response(provider_response: dict):
+    data = provider_response.get("data")
+    candidates = [data] if isinstance(data, dict) else (data if isinstance(data, list) else [])
+    task_id = provider_response.get("taskId") or provider_response.get("task_id")
+
+    for item in candidates:
+        if isinstance(item, dict):
+            task_id = task_id or item.get("taskId") or item.get("task_id")
+            if task_id:
+                item.setdefault("taskId", task_id)
+                item.setdefault("task_id", task_id)
+                break
+
+    if not task_id:
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "message": "SunoAPI did not return a task ID",
+                "provider_code": provider_response.get("code"),
+                "provider_message": provider_response.get("msg")
+            }
+        )
+
+    provider_response["taskId"] = task_id
+    provider_response["task_id"] = task_id
+    return provider_response
+
 def normalize_model(model: str) -> str:
     if model.lower() in ["v4", "v4_5", "v45"]:
         return "V4_5"
@@ -127,7 +154,12 @@ async def generate_music(payload: GenerateMusicRequest):
     if res.status_code != 200:
         raise HTTPException(500, "Gagal generate musik")
 
-    return res.json()
+    try:
+        provider_response = res.json()
+    except ValueError:
+        raise HTTPException(502, "SunoAPI returned invalid JSON")
+
+    return normalize_task_response(provider_response)
 
 # ================= RECORD INFO =================
 @app.get("/record-info/{task_id}")
