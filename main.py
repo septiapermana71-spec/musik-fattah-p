@@ -4,6 +4,7 @@ import requests
 import psycopg2
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
@@ -100,6 +101,28 @@ def normalize_task_response(provider_response: dict):
     provider_response["task_id"] = task_id
     return provider_response
 
+def find_audio_candidates(payload):
+    candidates = []
+
+    def walk(value):
+        if isinstance(value, list):
+            for item in value:
+                walk(item)
+        elif isinstance(value, dict):
+            audio_url = (
+                value.get("audioUrl") or value.get("audio_url")
+                or value.get("streamAudioUrl") or value.get("stream_audio_url")
+            )
+            if isinstance(audio_url, str) and audio_url.startswith(("https://", "http://")):
+                audio_id = value.get("audioId") or value.get("audio_id") or value.get("id")
+                candidates.append((str(audio_id) if audio_id is not None else "", audio_url))
+            for child in value.values():
+                if isinstance(child, (dict, list)):
+                    walk(child)
+
+    walk(payload)
+    return candidates
+
 def normalize_model(model: str) -> str:
     if model.lower() in ["v4", "v4_5", "v45"]:
         return "V4_5"
@@ -179,6 +202,56 @@ async def record_info(task_id: str):
             params={"taskId": task_id}
         )
     return res.json()
+
+@app.get("/lyrics/{task_id}")
+async def get_lyrics(task_id: str, audioId: str):
+    async with httpx.AsyncClient(timeout=60) as client:
+        res = await client.post(
+            LYRICS_URL,
+            headers=suno_headers(),
+            json={"taskId": task_id, "audioId": audioId}
+        )
+    if res.status_code >= 400:
+        raise HTTPException(502, "Gagal mengambil lirik dari SunoAPI")
+    try:
+        return res.json()
+    except ValueError:
+        raise HTTPException(502, "SunoAPI mengembalikan respons lirik yang tidak valid")
+
+@app.get("/download/{task_id}")
+async def download_music(task_id: str, audioId: Optional[str] = None):
+    async with httpx.AsyncClient(timeout=120, follow_redirects=True) as client:
+        record_res = await client.get(
+            STATUS_URL,
+            headers=suno_headers(),
+            params={"taskId": task_id}
+        )
+        if record_res.status_code >= 400:
+            raise HTTPException(502, "Gagal mengambil informasi audio dari SunoAPI")
+        try:
+            record = record_res.json()
+        except ValueError:
+            raise HTTPException(502, "SunoAPI mengembalikan status audio yang tidak valid")
+
+        candidates = find_audio_candidates(record)
+        selected = next((item for item in candidates if audioId and item[0] == audioId), None)
+        if selected is None and (not audioId or len(candidates) == 1):
+            selected = candidates[0] if candidates else None
+        if selected is None:
+            raise HTTPException(404, "Audio belum tersedia atau audio ID tidak ditemukan")
+
+        audio_res = await client.get(selected[1])
+        if audio_res.status_code >= 400:
+            raise HTTPException(502, "Gagal mengunduh audio dari penyedia musik")
+
+    media_type = audio_res.headers.get("content-type", "audio/mpeg").split(";", 1)[0]
+    if not media_type.startswith("audio/") and media_type != "application/octet-stream":
+        media_type = "audio/mpeg"
+    return Response(
+        content=audio_res.content,
+        media_type=media_type,
+        headers={"Content-Disposition": 'attachment; filename="FattahMusic.mp3"', "Cache-Control": "no-store"}
+    )
 
 # ================= CALLBACK =================
 @app.post("/callback")

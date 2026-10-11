@@ -12,8 +12,14 @@
     @media(max-width:760px){.app{padding:14px 16px calc(98px + env(safe-area-inset-bottom))}.topbar{padding:5px 0 18px}.hero{grid-template-columns:1fr;gap:15px;margin-bottom:17px}.hero-copy{padding:10px 2px 0}.hero h1{font-size:37px}.hero-art{min-height:125px}.wave{height:108px}.workspace{grid-template-columns:1fr;gap:14px}.composer{padding:17px}.side{grid-row:2}.results{padding:17px}.bottom-nav{position:fixed;display:grid;grid-template-columns:repeat(3,1fr);left:0;right:0;bottom:0;padding:9px 10px calc(8px + env(safe-area-inset-bottom));background:#0c1218f2;border-top:1px solid #26333e;backdrop-filter:blur(18px);z-index:10}.nav-btn{border:0;background:transparent;color:#81909e;display:grid;justify-items:center;gap:3px;font-size:10px;padding:5px;cursor:pointer}.nav-btn svg{width:21px;height:21px}.nav-btn.active{color:var(--mint)}.server-pill{font-size:10px;padding:8px 10px}.brand-name{font-size:19px}}
     @media(max-width:380px){.app{padding-left:12px;padding-right:12px}.hero h1{font-size:32px}.options{align-items:flex-start}.model-field select{min-width:86px}.server-pill{gap:6px}}
   </style>
+  <style>
+    .track-top{align-items:center}.track-cover{width:78px;height:78px;flex:0 0 78px;border-radius:14px;overflow:hidden;border:1px solid #344250;background:linear-gradient(145deg,#123c3b,#202048 62%,#43254d);display:grid;place-items:center;color:#73e9c5;font-size:30px}.track-cover img{width:100%;height:100%;object-fit:cover;display:block}.track-info{min-width:0;flex:1}.track-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.download{font:inherit}.download:disabled{opacity:.65;cursor:wait}.lyrics{margin-top:11px;border-top:1px solid #263441;padding-top:9px}.lyrics summary{cursor:pointer;color:#86e8c8;font-size:12px;font-weight:750;list-style:none}.lyrics summary::-webkit-details-marker{display:none}.lyrics summary:after{content:"＋";float:right;color:#91a1ae}.lyrics[open] summary:after{content:"−"}.lyrics-content{margin-top:9px;max-height:280px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#080e14;border:1px solid #263441;border-radius:11px;padding:12px;color:#d3dce4;font-size:12px;line-height:1.75}.lyrics-content.loading{color:#a8b6c1}.lyrics-content.error{color:#ff9cab}
+  </style>
 </head>
 <body>
+  <style>
+    .recover{margin-top:14px;padding:13px;border:1px solid #2b3947;border-radius:14px;background:#0b121a}.recover label{display:block;font-size:12px;font-weight:750;margin-bottom:8px}.recover-controls{display:flex;gap:8px}.recover input{min-width:0;flex:1;background:#080d13;color:var(--text);border:1px solid #3a4857;border-radius:10px;padding:10px;font:12px ui-monospace,monospace}.recover button{border:1px solid #3b4b59;background:#14202b;color:#d4e0e9;border-radius:10px;padding:9px 11px;font-size:11px;font-weight:750;cursor:pointer}.recover button:disabled{opacity:.6}.recover-hint{font-size:10px;color:var(--muted);margin-top:7px}
+  </style>
   <main class="app">
     <header class="topbar">
       <div class="brand">
@@ -84,6 +90,7 @@
           <div class="results-head"><h2>Hasil lagu</h2><span class="result-count" id="resultCount">0 track</span></div>
           <div class="empty" id="emptyState"><div class="empty-icon"><svg viewBox="0 0 24 24" width="21" height="21" fill="none"><path d="M9 18V5l12-2v13M9 18c0 1.1-1.6 2-3.5 2S2 19.1 2 18s1.6-2 3.5-2S9 16.9 9 18Zm12-2c0 1.1-1.6 2-3.5 2S14 17.1 14 16s1.6-2 3.5-2 3.5.9 3.5 2ZM9 9l12-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Belum ada lagu. Tulis ide dan tekan <b>Buat lagu</b>.</div>
           <div id="trackList"></div>
+          <div class="recover"><label for="taskLookup">Sudah membuat lagu? Muat hasilnya lagi</label><div class="recover-controls"><input id="taskLookup" type="text" autocomplete="off" placeholder="Tempel Task ID lagu"><button id="lookupBtn" type="button">Ambil hasil</button></div><div class="recover-hint">Memeriksa task yang sudah ada; tidak membuat lagu baru atau memakai kuota generate.</div></div>
         </section>
       </aside>
     </section>
@@ -142,14 +149,14 @@
       }
       return null;
     }
-    function collectTracks(obj, found=[]) {
+    function collectTracks(obj, taskId='', found=[]) {
       if (!obj || typeof obj !== 'object') return found;
-      if (Array.isArray(obj)) { obj.forEach(x => collectTracks(x, found)); return found; }
+      if (Array.isArray(obj)) { obj.forEach(x => collectTracks(x, taskId, found)); return found; }
       const url = obj.audioUrl || obj.audio_url || obj.streamAudioUrl || obj.stream_audio_url;
       if (typeof url === 'string' && /^https?:\/\//i.test(url) && !found.some(x => x.url === url)) {
-        found.push({url, title: obj.title || obj.name || '', id: obj.audioId || obj.id || ''});
+        found.push({url, title: obj.title || obj.name || '', id: String(obj.audioId || obj.audio_id || obj.id || ''), taskId, imageUrl: obj.imageUrl || obj.image_url || obj.coverUrl || obj.cover_url || ''});
       }
-      Object.values(obj).forEach(v => { if (v && typeof v === 'object') collectTracks(v, found); });
+      Object.values(obj).forEach(v => { if (v && typeof v === 'object') collectTracks(v, taskId, found); });
       return found;
     }
     function findFailure(obj) {
@@ -160,22 +167,75 @@
       for (const v of Object.values(obj)) { if (v && typeof v === 'object') { const f=findFailure(v); if(f)return f; } }
       return null;
     }
+    function extractLyrics(value) {
+      if (typeof value === 'string') return value.trim();
+      if (Array.isArray(value)) {
+        return value.map(item => {
+          if (typeof item === 'string') return item.trim();
+          if (item && typeof item === 'object') return item.text || item.lyric || item.content || item.line || item.words || '';
+          return '';
+        }).filter(Boolean).join('\n').trim();
+      }
+      if (value && typeof value === 'object') {
+        for (const key of ['lyrics','lyric','lyricText','plainLyrics','syncedLyrics','lines','segments','text']) {
+          if (value[key] !== undefined) { const result = extractLyrics(value[key]); if (result) return result; }
+        }
+        for (const child of Object.values(value)) {
+          if (child && typeof child === 'object') { const result = extractLyrics(child); if (result) return result; }
+        }
+      }
+      return '';
+    }
+    async function loadLyrics(track, content) {
+      if (!track.taskId || !track.id) { content.className='lyrics-content error'; content.textContent='ID audio tidak tersedia pada respons server, jadi lirik belum dapat diminta.'; return; }
+      content.className='lyrics-content loading'; content.textContent='Memuat lirik dari server…';
+      try {
+        const url = `${API_BASE}/lyrics/${encodeURIComponent(track.taskId)}?audioId=${encodeURIComponent(track.id)}`;
+        const response = await fetch(url, {headers:{'Accept':'application/json'}});
+        const body = await readJson(response);
+        if (!response.ok) throw new Error(typeof body.detail === 'string' ? body.detail : `HTTP ${response.status}`);
+        const lyrics = extractLyrics(body);
+        if (!lyrics) throw new Error('Server tidak mengembalikan teks lirik untuk track ini.');
+        content.className='lyrics-content'; content.textContent=lyrics;
+      } catch (error) { content.className='lyrics-content error'; content.textContent='Lirik belum dapat dimuat: ' + (error.message || 'periksa koneksi server.'); }
+    }
     function renderTracks(tracks) {
       $('emptyState').style.display = 'none';
-      $('resultCount').textContent = tracks.length + (tracks.length === 1 ? ' track' : ' track');
+      $('resultCount').textContent = `${tracks.length} track`;
       $('trackList').innerHTML = '';
       tracks.forEach((track, index) => {
         const card = document.createElement('article'); card.className = 'track';
         const title = track.title || `Lagu AI · Versi ${index+1}`;
         const top = document.createElement('div'); top.className = 'track-top';
-        const info = document.createElement('div');
+        const cover = document.createElement('div'); cover.className='track-cover'; cover.setAttribute('aria-label','Sampul lagu'); cover.textContent='♫';
+        if (track.imageUrl && /^https?:\/\//i.test(track.imageUrl)) { const img=document.createElement('img'); img.src=track.imageUrl; img.alt=`Sampul ${title}`; img.loading='lazy'; img.onerror=()=>{img.remove(); cover.textContent='♫';}; cover.textContent=''; cover.append(img); }
+        const info = document.createElement('div'); info.className='track-info';
         const t = document.createElement('div'); t.className='track-title'; t.textContent=title;
         const meta = document.createElement('div'); meta.className='track-meta'; meta.textContent=track.id ? `Audio ID: ${track.id}` : 'Hasil dari SunoAPI';
         info.append(t,meta);
-        const badge=document.createElement('span'); badge.className='track-badge'; badge.textContent='Selesai'; top.append(info,badge);
+        const badge=document.createElement('span'); badge.className='track-badge'; badge.textContent='Selesai'; top.append(cover,info,badge);
         const audio=document.createElement('audio'); audio.controls=true; audio.preload='none'; audio.src=track.url;
-        const download=document.createElement('a'); download.className='download'; download.href=track.url; download.target='_blank'; download.rel='noopener'; download.setAttribute('download',`fattahmusic-versi-${index+1}.mp3`); download.textContent='↓  Buka / unduh audio';
-        card.append(top,audio,download); $('trackList').append(card);
+        const actions=document.createElement('div'); actions.className='track-actions';
+        const download=document.createElement('button'); download.type='button'; download.className='download'; download.textContent='↓  Unduh MP3';
+        download.addEventListener('click', async () => {
+          if (!track.taskId) { toast('Task ID tidak tersedia untuk unduhan.'); return; }
+          const query=track.id ? `?audioId=${encodeURIComponent(track.id)}` : '';
+          const downloadUrl=`${API_BASE}/download/${encodeURIComponent(track.taskId)}${query}`;
+          download.disabled=true; download.textContent='Mengunduh…';
+          try {
+            const response=await fetch(downloadUrl);
+            if (!response.ok) { const body=await readJson(response); throw new Error(typeof body.detail==='string' ? body.detail : `HTTP ${response.status}`); }
+            const blob=await response.blob(); if (!blob.size) throw new Error('File audio kosong.');
+            const objectUrl=URL.createObjectURL(blob); const link=document.createElement('a'); link.href=objectUrl; link.download=`FattahMusic-versi-${index+1}.mp3`; document.body.append(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(objectUrl),60000); toast('Unduhan MP3 dimulai.');
+          } catch (error) { toast('Unduhan gagal: ' + (error.message || 'periksa koneksi server.')); }
+          finally { download.disabled=false; download.textContent='↓  Unduh MP3'; }
+        });
+        actions.append(download);
+        const lyricsBox=document.createElement('details'); lyricsBox.className='lyrics';
+        const summary=document.createElement('summary'); summary.textContent='Lihat lirik';
+        const lyricContent=document.createElement('div'); lyricContent.className='lyrics-content'; lyricContent.textContent='Buka untuk meminta lirik dari server.';
+        lyricsBox.append(summary,lyricContent); lyricsBox.addEventListener('toggle',()=>{if(lyricsBox.open&&!lyricsBox.dataset.requested){lyricsBox.dataset.requested='1';loadLyrics(track,lyricContent);}});
+        card.append(top,audio,actions,lyricsBox); $('trackList').append(card);
       });
     }
     async function readJson(response) {
@@ -191,13 +251,30 @@
         const r = await fetch(`${API_BASE}/record-info/${encodeURIComponent(taskId)}`, {headers:{'Accept':'application/json'}});
         const body = await readJson(r);
         if (!r.ok) throw new Error(`Cek status HTTP ${r.status}: ${JSON.stringify(body).slice(0,350)}`);
-        const tracks = collectTracks(body);
-        if (tracks.length) { renderTracks(tracks); showStatus('Lagu selesai', `${tracks.length} hasil tersedia untuk diputar atau diunduh.`, 'done'); return; }
+        const tracks = collectTracks(body, taskId);
+        if (tracks.length) { renderTracks(tracks); showStatus('Lagu selesai', `${tracks.length} hasil tersedia dengan sampul, opsi lirik, dan unduhan MP3.`, 'done'); return; }
         const fail = findFailure(body);
         if (fail) throw new Error('SunoAPI gagal: ' + fail);
       }
       throw new Error('Waktu tunggu habis. Task masih diproses; coba cek lagi nanti.');
     }
+    async function lookupExistingTask() {
+      const taskId=$('taskLookup').value.trim();
+      if (!taskId) { toast('Tempel Task ID terlebih dahulu.'); $('taskLookup').focus(); return; }
+      const lookup=$('lookupBtn'); lookup.disabled=true; showStatus('Memuat lagu yang sudah dibuat…','Memeriksa status task tanpa mengirim generate baru.');
+      try {
+        const response=await fetch(`${API_BASE}/record-info/${encodeURIComponent(taskId)}`,{headers:{'Accept':'application/json'}});
+        const body=await readJson(response);
+        if (!response.ok) throw new Error(`Pemeriksaan task HTTP ${response.status}: ${JSON.stringify(body).slice(0,350)}`);
+        const tracks=collectTracks(body,taskId);
+        if (!tracks.length) { const failed=findFailure(body); throw new Error(failed || 'Audio belum tersedia untuk Task ID ini. Pastikan ID benar atau tunggu task selesai.'); }
+        try { localStorage.setItem('fattahmusic.lastTaskId',taskId); } catch {}
+        renderTracks(tracks); showStatus('Hasil lagu ditemukan',`${tracks.length} track dimuat ulang.`, 'done'); $('results').scrollIntoView({behavior:'smooth',block:'start'});
+      } catch (error) { showStatus('Hasil belum dapat dimuat',error.message || 'Periksa Task ID dan koneksi server.','error'); }
+      finally { lookup.disabled=false; }
+    }
+    $('lookupBtn').addEventListener('click',lookupExistingTask);
+    try { $('taskLookup').value=localStorage.getItem('fattahmusic.lastTaskId') || ''; } catch {}
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const prompt = promptEl.value.trim();
@@ -213,6 +290,7 @@
         if (!response.ok) throw new Error(`Generate HTTP ${response.status}: ${JSON.stringify(body).slice(0,500)}`);
         const taskId = findTaskId(body);
         if (!taskId) throw new Error('Server belum mengirim task ID. Respons: ' + JSON.stringify(body).slice(0,700));
+        try { localStorage.setItem('fattahmusic.lastTaskId', taskId); $('taskLookup').value=taskId; } catch {}
         showStatus('Task diterima', `ID ${taskId} · menunggu audio selesai…`);
         await pollTask(taskId);
         $('results').scrollIntoView({behavior:'smooth',block:'start'});
