@@ -27,8 +27,8 @@
     event.preventDefault();
     deferredPrompt = event;
     installButton.hidden = isStandalone();
-    installButton.textContent = '＋ Pasang';
-    installButton.setAttribute('aria-label', 'Pasang Music Fattah AI');
+    installButton.textContent = 'Install APK';
+    installButton.setAttribute('aria-label', 'Install APK Music Fattah AI');
   });
 
   installButton.addEventListener('click', async () => {
