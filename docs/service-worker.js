@@ -1,11 +1,11 @@
-const CACHE_NAME = 'musik-fattah-shell-v2';
+const CACHE_NAME = 'musik-fattah-shell-v3';
 const PRECACHE_URLS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './music-fattah-4tab.js?v=1',
   './supabase-config.js?v=3',
-  './pwa.js?v=2',
+  './pwa.js?v=3',
   './icons/icon-180.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -35,6 +35,20 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+
+  if (url.pathname.endsWith('/pwa.js')) {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      try {
+        const response = await fetch(request, { cache: 'no-store' });
+        if (response.ok) await cache.put(request, response.clone());
+        return response;
+      } catch {
+        return (await cache.match(request, { ignoreSearch: true })) || new Response('', { status: 504, statusText: 'Offline' });
+      }
+    })());
+    return;
+  }
 
   if (request.mode === 'navigate') {
     event.respondWith((async () => {
