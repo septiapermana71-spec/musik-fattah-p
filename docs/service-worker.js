@@ -1,9 +1,9 @@
-const CACHE_NAME = 'musik-fattah-shell-v3';
+const CACHE_NAME = 'musik-fattah-shell-v4';
 const PRECACHE_URLS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './music-fattah-4tab.js?v=1',
+  './music-fattah-4tab.js?v=2',
   './supabase-config.js?v=3',
   './pwa.js?v=3',
   './icons/icon-180.png',

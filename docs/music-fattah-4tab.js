@@ -68,24 +68,39 @@
     return null;
   }
 
-  function collectTracks(value, taskId = '', found = []) {
+  function tagText(value) {
+    if (typeof value === 'string') return value.trim();
+    if (Array.isArray(value)) return value.map(tagText).filter(Boolean).join(', ');
+    return '';
+  }
+
+  function collectTracks(value, taskId = '', found = [], metadata = {}) {
     if (!value || typeof value !== 'object') return found;
     if (Array.isArray(value)) {
-      value.forEach((child) => collectTracks(child, taskId, found));
+      value.forEach((child) => collectTracks(child, taskId, found, metadata));
       return found;
     }
     const url = value.audioUrl || value.audio_url || value.streamAudioUrl || value.stream_audio_url;
     if (typeof url === 'string' && /^https?:\/\//i.test(url) && !found.some((track) => track.url === url)) {
+      const sourceGenre = metadata.genre || value.genre || value.tags || '';
+      const lyricSource = value.lyrics ?? value.lyric ?? value.lyricText ?? value.plainLyrics ?? value.syncedLyrics ?? '';
       found.push({
         url,
-        title: value.title || value.name || '',
+        title: value.title || value.name || metadata.title || '',
         id: String(value.audioId || value.audio_id || value.id || ''),
         taskId: taskId || String(value.taskId || value.task_id || ''),
-        imageUrl: value.imageUrl || value.image_url || value.coverUrl || value.cover_url || ''
+        imageUrl: value.imageUrl || value.image_url || value.coverUrl || value.cover_url || value.thumbnailUrl || value.thumbnail_url || value.image || '',
+        genre: tagText(sourceGenre) || tagText(metadata.style) || tagText(value.style),
+        style: tagText(metadata.style) || tagText(value.style) || tagText(value.tags),
+        mood: tagText(metadata.mood) || tagText(value.mood),
+        vocal: tagText(metadata.vocal) || tagText(value.vocal) || tagText(value.vocalGender),
+        lyrics: extractLyrics(lyricSource),
+        prompt: metadata.prompt || value.prompt || '',
+        autoLoadLyrics: metadata.autoLoadLyrics === true
       });
     }
     Object.values(value).forEach((child) => {
-      if (child && typeof child === 'object') collectTracks(child, taskId, found);
+      if (child && typeof child === 'object') collectTracks(child, taskId, found, metadata);
     });
     return found;
   }
@@ -153,7 +168,14 @@
       title: track.title || '',
       id: String(track.audio_id || track.id || ''),
       taskId: row.task_id,
-      imageUrl: track.image_url || track.imageUrl || ''
+      imageUrl: track.image_url || track.imageUrl || '',
+      genre: tagText(track.genre || track.tags || ''),
+      style: tagText(track.style || track.tags || ''),
+      mood: tagText(track.mood || ''),
+      vocal: tagText(track.vocal || ''),
+      lyrics: extractLyrics(track.lyrics || track.lyric || ''),
+      prompt: track.prompt || row.prompt || '',
+      autoLoadLyrics: false
     })).filter((track) => track.url && /^https?:\/\//i.test(track.url));
   }
 
@@ -207,12 +229,23 @@
       title.textContent = track.title || `Lagu AI · ${index + 1}`;
       const meta = document.createElement('small');
       meta.textContent = track.id ? `Audio ID ${track.id}` : 'Hasil SunoAPI';
+      const genre = document.createElement('small');
+      genre.className = 'generated-genre';
+      genre.textContent = `Genre: ${track.genre || 'Belum tercatat'}`;
       const audio = document.createElement('audio');
       audio.controls = true;
       audio.preload = 'none';
       audio.src = track.url;
       audio.setAttribute('aria-label', `Putar ${track.title || 'lagu AI'}`);
-      info.append(title, meta, audio);
+      info.append(title, meta, genre);
+      const styleInfo = [track.mood, track.vocal].filter(Boolean).join(' · ');
+      if (styleInfo) {
+        const detail = document.createElement('small');
+        detail.className = 'generated-style';
+        detail.textContent = styleInfo;
+        info.append(detail);
+      }
+      info.append(audio);
 
       const actions = document.createElement('div');
       actions.className = 'generated-actions';
@@ -255,11 +288,17 @@
       const lyrics = document.createElement('details');
       lyrics.className = 'generated-lyrics';
       const summary = document.createElement('summary');
-      summary.textContent = 'Lihat lirik';
+      summary.textContent = 'Lirik lagu';
       const lyricsBody = document.createElement('div');
       lyricsBody.className = 'generated-lyrics-body';
-      lyricsBody.textContent = 'Buka untuk mengambil lirik dari server.';
+      lyricsBody.textContent = track.lyrics || (track.autoLoadLyrics ? 'Memuat lirik dari server…' : 'Buka untuk mengambil lirik dari server.');
       lyrics.append(summary, lyricsBody);
+      if (track.lyrics) {
+        lyrics.open = true;
+        lyrics.dataset.requested = '1';
+      } else if (track.autoLoadLyrics && track.taskId && track.id) {
+        lyrics.open = true;
+      }
       lyrics.addEventListener('toggle', () => {
         if (lyrics.open && !lyrics.dataset.requested) {
           lyrics.dataset.requested = '1';
@@ -269,6 +308,10 @@
       actions.append(lyrics);
       card.append(cover, info, actions);
       list.append(card);
+      if (!track.lyrics && track.autoLoadLyrics && track.taskId && track.id && !lyrics.dataset.requested) {
+        lyrics.dataset.requested = '1';
+        loadLyrics(track, lyricsBody);
+      }
     });
   }
 
@@ -336,10 +379,12 @@
 
   async function loadLyrics(track, node) {
     if (!track.taskId || !track.id) {
+      track.autoLoadLyrics = false;
       node.className = 'generated-lyrics-body error';
       node.textContent = 'ID audio belum tersedia, jadi lirik tidak bisa diminta.';
       return;
     }
+    track.autoLoadLyrics = false;
     node.className = 'generated-lyrics-body loading';
     node.textContent = 'Memuat lirik dari server…';
     try {
@@ -349,30 +394,49 @@
       if (!response.ok) throw new Error(typeof body.detail === 'string' ? body.detail : `HTTP ${response.status}`);
       const text = extractLyrics(body);
       if (!text) throw new Error('Server belum mengembalikan teks lirik.');
+      track.lyrics = text;
       node.className = 'generated-lyrics-body';
       node.textContent = text;
+      if (currentUser && supabaseClient) {
+        const relatedTracks = allTracks.filter((item) => item.taskId === track.taskId);
+        try { await saveSong(track.taskId, track.prompt || '', 'complete', relatedTracks.length ? relatedTracks : [track]); }
+        catch (error) { console.warn('Lirik tampil, tetapi belum tersimpan di riwayat:', error); }
+      }
     } catch (error) {
+      track.autoLoadLyrics = false;
+      if (node.parentElement?.tagName === 'DETAILS') node.parentElement.dataset.requested = '';
       node.className = 'generated-lyrics-body error';
       node.textContent = `Lirik belum tersedia: ${error.message || 'periksa koneksi server.'}`;
     }
   }
 
+  let saveQueue = Promise.resolve();
+
   async function saveSong(taskId, prompt, state, tracks) {
     if (!currentUser || !supabaseClient) throw new Error('Sesi login tidak aktif. Masuk kembali untuk menyimpan riwayat.');
+    const userId = currentUser.id;
     const safeTracks = tracks.map((track) => ({
       audio_id: track.id || '',
       title: track.title || '',
       audio_url: track.url || '',
-      image_url: track.imageUrl || ''
+      image_url: track.imageUrl || '',
+      genre: track.genre || '',
+      style: track.style || '',
+      mood: track.mood || '',
+      vocal: track.vocal || '',
+      lyrics: track.lyrics || '',
+      prompt: track.prompt || prompt || ''
     }));
-    const { error } = await supabaseClient.from('user_songs').upsert({
-      user_id: currentUser.id,
+    const row = {
+      user_id: userId,
       task_id: taskId,
       prompt: prompt || '',
       status: state,
       tracks: safeTracks,
       updated_at: new Date().toISOString()
-    }, { onConflict: 'user_id,task_id' });
+    };
+    saveQueue = saveQueue.catch(() => {}).then(() => supabaseClient.from('user_songs').upsert(row, { onConflict: 'user_id,task_id' }));
+    const { error } = await saveQueue;
     if (error) throw error;
   }
 
@@ -414,20 +478,28 @@
     }
   }
 
-  async function pollTask(taskId, prompt) {
+  async function pollTask(taskId, prompt, metadata = {}) {
     for (let attempt = 0; attempt < 60; attempt++) {
       await wait(10000);
       status('Meracik lagu…', `Memeriksa hasil · ${(attempt + 1) * 10} detik`);
       const response = await fetch(`${API_BASE}/record-info/${encodeURIComponent(taskId)}`, { headers: { Accept: 'application/json' } });
       const body = await readJson(response);
       if (!response.ok) throw new Error(`Pemeriksaan status gagal (HTTP ${response.status}).`);
-      const tracks = collectTracks(body, taskId);
+      const tracks = collectTracks(body, taskId, [], metadata);
       if (tracks.length) {
+        tracks.forEach((track) => {
+          track.prompt = track.prompt || prompt;
+          track.genre = track.genre || metadata.genre || '';
+          track.style = track.style || metadata.style || '';
+          track.mood = track.mood || metadata.mood || '';
+          track.vocal = track.vocal || metadata.vocal || '';
+          track.autoLoadLyrics = !track.lyrics && Boolean(track.id);
+        });
         mergeTracks(tracks);
-        renderTracks();
         let saved = true;
         try { await saveSong(taskId, prompt, 'complete', tracks); }
         catch { saved = false; }
+        renderTracks();
         status(saved ? 'Lagu selesai dan tersimpan' : 'Lagu selesai, riwayat belum tersimpan', saved ? `${tracks.length} hasil masuk ke koleksi Anda. MP4 diproses otomatis.` : 'Audio tersedia; periksa tabel user_songs dan izin Supabase.', saved ? 'done' : 'error');
         toast(saved ? 'Lagu selesai dan tersimpan di Koleksi.' : 'Lagu selesai, tetapi riwayat Supabase belum tersimpan.');
         go('library');
@@ -455,6 +527,7 @@
     const customMode = currentMode === 'lyrics' && !instrumental;
     const style = [genre, mood, instrumental ? 'Instrumental' : vocal].filter(Boolean).join(', ');
     const title = $('title')?.value.trim() || '';
+    const generationMeta = { genre, mood, vocal: instrumental ? 'Instrumental' : vocal, style, title, prompt, autoLoadLyrics: true };
     if (!window.confirm('Permintaan ini memakai kuota SunoAPI.org. Lanjutkan membuat lagu?')) return;
 
     const button = document.querySelector('#create .primary');
@@ -475,7 +548,7 @@
       status('Task diterima', `ID ${taskId} · menyimpan riwayat dan menunggu audio…`);
       try { await saveSong(taskId, prompt, 'processing', []); }
       catch (error) { authNotice(`Lagu sedang dibuat, tetapi riwayat awal belum tersimpan: ${error.message || ''}`, true); }
-      await pollTask(taskId, prompt);
+      await pollTask(taskId, prompt, generationMeta);
     } catch (error) {
       if (taskId) { try { await saveSong(taskId, prompt, 'failed', []); } catch {} }
       status('Pembuatan lagu belum berhasil', error.message || 'Periksa koneksi server lalu coba lagi.', 'error');
