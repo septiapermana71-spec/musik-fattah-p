@@ -3,6 +3,8 @@ import httpx
 import requests
 import psycopg2
 from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
@@ -23,7 +25,10 @@ BASE_URL = os.getenv(
 
 CALLBACK_URL = f"{BASE_URL}/callback"
 
-SUNO_BASE_API = "https://api.kie.ai/api/v1"
+SUNO_BASE_API = os.getenv(
+    "SUNO_API_BASE",
+    "https://apibox.erweima.ai/api/v1"
+).rstrip("/")
 STYLE_GENERATE_URL = f"{SUNO_BASE_API}/style/generate"
 MUSIC_GENERATE_URL = f"{SUNO_BASE_API}/generate"
 STATUS_URL = f"{SUNO_BASE_API}/generate/record-info"
@@ -34,6 +39,13 @@ VIDEO_URL = f"{SUNO_BASE_API}/mp4/generate"
 app = FastAPI(
     title="AI Music Suno API Wrapper",
     version="2.0.0"
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://septiapermana71-spec.github.io"],
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
 )
 
 # ==================================================
@@ -51,7 +63,7 @@ class GenerateMusicRequest(BaseModel):
     title: Optional[str] = None
     instrumental: bool = False
     customMode: bool = False
-    model: str = "V4_5"
+    model: str = "V6"
 
 # ================= HELPERS =================
 def suno_headers():
@@ -61,6 +73,55 @@ def suno_headers():
         "Authorization": f"Bearer {SUNO_API_KEY}",
         "Content-Type": "application/json"
     }
+
+def normalize_task_response(provider_response: dict):
+    data = provider_response.get("data")
+    candidates = [data] if isinstance(data, dict) else (data if isinstance(data, list) else [])
+    task_id = provider_response.get("taskId") or provider_response.get("task_id")
+
+    for item in candidates:
+        if isinstance(item, dict):
+            task_id = task_id or item.get("taskId") or item.get("task_id")
+            if task_id:
+                item.setdefault("taskId", task_id)
+                item.setdefault("task_id", task_id)
+                break
+
+    if not task_id:
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "message": "SunoAPI did not return a task ID",
+                "provider_code": provider_response.get("code"),
+                "provider_message": provider_response.get("msg")
+            }
+        )
+
+    provider_response["taskId"] = task_id
+    provider_response["task_id"] = task_id
+    return provider_response
+
+def find_audio_candidates(payload):
+    candidates = []
+
+    def walk(value):
+        if isinstance(value, list):
+            for item in value:
+                walk(item)
+        elif isinstance(value, dict):
+            audio_url = (
+                value.get("audioUrl") or value.get("audio_url")
+                or value.get("streamAudioUrl") or value.get("stream_audio_url")
+            )
+            if isinstance(audio_url, str) and audio_url.startswith(("https://", "http://")):
+                audio_id = value.get("audioId") or value.get("audio_id") or value.get("id")
+                candidates.append((str(audio_id) if audio_id is not None else "", audio_url))
+            for child in value.values():
+                if isinstance(child, (dict, list)):
+                    walk(child)
+
+    walk(payload)
+    return candidates
 
 def normalize_model(model: str) -> str:
     if model.lower() in ["v4", "v4_5", "v45"]:
@@ -124,7 +185,12 @@ async def generate_music(payload: GenerateMusicRequest):
     if res.status_code != 200:
         raise HTTPException(500, "Gagal generate musik")
 
-    return res.json()
+    try:
+        provider_response = res.json()
+    except ValueError:
+        raise HTTPException(502, "SunoAPI returned invalid JSON")
+
+    return normalize_task_response(provider_response)
 
 # ================= RECORD INFO =================
 @app.get("/record-info/{task_id}")
@@ -137,6 +203,80 @@ async def record_info(task_id: str):
         )
     return res.json()
 
+@app.get("/lyrics/{task_id}")
+async def get_lyrics(task_id: str, audioId: str):
+    async with httpx.AsyncClient(timeout=60) as client:
+        res = await client.post(
+            LYRICS_URL,
+            headers=suno_headers(),
+            json={"taskId": task_id, "audioId": audioId}
+        )
+    if res.status_code >= 400:
+        raise HTTPException(502, "Gagal mengambil lirik dari SunoAPI")
+    try:
+        return res.json()
+    except ValueError:
+        raise HTTPException(502, "SunoAPI mengembalikan respons lirik yang tidak valid")
+
+@app.get("/download/{task_id}")
+async def download_music(task_id: str, audioId: Optional[str] = None):
+    async with httpx.AsyncClient(timeout=120, follow_redirects=True) as client:
+        record_res = await client.get(
+            STATUS_URL,
+            headers=suno_headers(),
+            params={"taskId": task_id}
+        )
+        if record_res.status_code >= 400:
+            raise HTTPException(502, "Gagal mengambil informasi audio dari SunoAPI")
+        try:
+            record = record_res.json()
+        except ValueError:
+            raise HTTPException(502, "SunoAPI mengembalikan status audio yang tidak valid")
+
+        candidates = find_audio_candidates(record)
+        selected = next((item for item in candidates if audioId and item[0] == audioId), None)
+        if selected is None and (not audioId or len(candidates) == 1):
+            selected = candidates[0] if candidates else None
+        if selected is None:
+            raise HTTPException(404, "Audio belum tersedia atau audio ID tidak ditemukan")
+
+        audio_res = await client.get(selected[1])
+        if audio_res.status_code >= 400:
+            raise HTTPException(502, "Gagal mengunduh audio dari penyedia musik")
+
+    media_type = audio_res.headers.get("content-type", "audio/mpeg").split(";", 1)[0]
+    if not media_type.startswith("audio/") and media_type != "application/octet-stream":
+        media_type = "audio/mpeg"
+    return Response(
+        content=audio_res.content,
+        media_type=media_type,
+        headers={"Content-Disposition": 'attachment; filename="FattahMusic.mp3"', "Cache-Control": "no-store"}
+    )
+
+# ================= VIDEO DOWNLOAD =================
+def local_video_path(task_id: str) -> str:
+    if not task_id or len(task_id) > 180 or not all(ch.isalnum() or ch in "-_" for ch in task_id):
+        raise HTTPException(400, "Task ID tidak valid")
+    return os.path.join("media", f"{task_id}.mp4")
+
+@app.get("/video-status/{task_id}")
+def video_status(task_id: str):
+    path = local_video_path(task_id)
+    ready = os.path.isfile(path) and os.path.getsize(path) > 0
+    return {"ready": ready}
+
+@app.get("/download-video/{task_id}")
+def download_video(task_id: str):
+    path = local_video_path(task_id)
+    if not os.path.isfile(path) or os.path.getsize(path) <= 0:
+        raise HTTPException(404, "MP4 belum siap. Coba lagi setelah video selesai diproses.")
+    return FileResponse(
+        path,
+        media_type="video/mp4",
+        filename=f"FattahMusic-{task_id}.mp4",
+        headers={"Cache-Control": "no-store"}
+    )
+
 # ================= CALLBACK =================
 @app.post("/callback")
 async def callback(request: Request):
@@ -145,21 +285,27 @@ async def callback(request: Request):
 
     try:
         task_id = data.get("taskId") or data.get("task_id")
-        items = data.get("data") or []
+        callback_type = data.get("callbackType") or data.get("callback_type")
+        raw_items = data.get("data") or data.get("sunoData") or []
+        items = raw_items if isinstance(raw_items, list) else [raw_items]
+
+        if callback_type == "error" or data.get("code", 200) != 200:
+            return {"status": "failed", "message": data.get("msg") or data.get("errorMessage")}
 
         if not items:
             return {"status": "ignored"}
 
         item = items[0]
-        state = item.get("state") or item.get("status")
+        state = callback_type or item.get("state") or item.get("status")
 
-        if state != "succeeded":
+        if state not in ["succeeded", "success", "first", "complete"]:
             return {"status": "processing"}
 
         audio_url = (
             item.get("audioUrl")
             or item.get("audio_url")
             or item.get("streamAudioUrl")
+            or item.get("stream_audio_url")
         )
 
         video_url = (
@@ -171,8 +317,8 @@ async def callback(request: Request):
         # ================= AUDIO CALLBACK =================
         if audio_url:
 
-            audio_id = item.get("audioId")
-            image_url = item.get("imageUrl")
+            audio_id = item.get("audioId") or item.get("id")
+            image_url = item.get("imageUrl") or item.get("image_url")
             title = item.get("title", "Untitled")
 
             conn = get_conn()
