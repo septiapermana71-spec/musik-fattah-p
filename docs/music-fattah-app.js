@@ -297,7 +297,18 @@
       const state = await readJson(response);
       if (!response.ok) throw new Error(typeof state.detail === 'string' ? state.detail : `HTTP ${response.status}`);
       if (!state.ready) {
-        toast('MP4 masih diproses otomatis. Coba lagi beberapa saat lagi.');
+        const labels = {
+          PENDING: 'MP4 masih diproses otomatis. Coba lagi beberapa saat lagi.',
+          NOT_STARTED: 'Pembuatan MP4 belum dimulai untuk lagu ini.',
+          NOT_FOUND: 'Task video belum tercatat di server. Periksa lagi beberapa saat.',
+          CREATE_TASK_FAILED: 'SunoAPI gagal memulai pembuatan MP4.',
+          GENERATE_MP4_FAILED: 'SunoAPI gagal membuat MP4.',
+          CALLBACK_EXCEPTION: 'SunoAPI melaporkan kendala callback MP4.',
+          POLL_ERROR: 'Server gagal memeriksa status MP4.',
+          DOWNLOAD_FAILED: 'Video selesai, tetapi server gagal mengambil berkas MP4.'
+        };
+        const label = labels[state.status] || `Status MP4: ${state.status || 'belum siap'}.`;
+        toast(state.message ? `${label} ${state.message}` : label);
         return;
       }
       window.location.assign(`${API_BASE}/download-video/${encodeURIComponent(track.taskId)}`);
