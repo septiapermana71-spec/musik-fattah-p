@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#080b16">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fattah Music">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Music Fattah AI — AI Music Studio</title>
 <style>
 :root{--bg:#070a13;--panel:#11182a;--panel2:#171e34;--line:#293452;--muted:#a8b1d0;--white:#f7f7ff;--purple:#9b4dff;--mint:#39f0c4}
@@ -44,7 +51,7 @@ label{display:block;font-size:12px;margin:16px 0 7px;color:#eef0ff}.range-row{di
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="logo">♫</div><div><strong>Music Fattah AI</strong><small>AI Music Studio</small></div></div><button class="pro" onclick="showToast('Fitur Premium dapat dihubungkan ke sistem pembayaran.')">♛ PRO</button></header>
+<header class="top"><div class="brand"><div class="logo">♫</div><div><strong>Music Fattah AI</strong><small>AI Music Studio</small></div></div><button class="pro" type="button" id="installButton" title="Pasang aplikasi Music Fattah AI">＋ Pasang</button></header>
 
 <main id="create" class="page active">
 <div class="hero"><div><h2>Buat Musik AI</h2><p>Ubah ide kamu menjadi lagu yang menakjubkan</p></div><div class="note">♫</div></div>
@@ -115,5 +122,6 @@ label{display:block;font-size:12px;margin:16px 0 7px;color:#eef0ff}.range-row{di
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase-config.js?v=3"></script>
 <script src="./music-fattah-4tab.js?v=1"></script>
+<script src="./pwa.js?v=1"></script>
 </body>
 </html>
