@@ -1,354 +1,87 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#080c12">
-  <meta name="description" content="FattahMusic — generator musik AI">
-  <title>FattahMusic — Generator Musik AI</title>
-  <style>
-    :root{color-scheme:dark;--bg:#080c12;--panel:#101721;--panel-2:#151e2a;--line:#263342;--muted:#92a0ae;--text:#f4f7fa;--mint:#4de5b4;--blue:#438cff;--purple:#ba6cff;--danger:#ff728b;--radius:22px;--shadow:0 22px 60px #0008}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#173b4735,transparent 40%),radial-gradient(ellipse at 0% 55%,#55296920,transparent 40%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}button,textarea,select{font:inherit}button{color:inherit}a{color:inherit}.app{max-width:1100px;margin:auto;padding:20px 24px 110px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 22px}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(140deg,#44e6b2,#508cff 75%,#c86dff);box-shadow:0 8px 26px #4de5b440}.brand-mark svg{width:27px;height:27px}.brand-name{font-weight:850;font-size:21px;letter-spacing:-.7px}.brand-sub{color:var(--muted);font-size:12px;margin-top:-2px}.server-pill{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:#101721cc;padding:9px 13px;color:#cbd5df;font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:#e6b94b;box-shadow:0 0 12px currentColor}.dot.ok{background:var(--mint)}.dot.bad{background:var(--danger)}.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch;margin:4px 0 24px}.hero-copy{padding:22px 4px 14px}.eyebrow{color:var(--mint);font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}.hero h1{font-size:clamp(32px,5vw,54px);line-height:1.03;letter-spacing:-2px;margin:12px 0 13px;max-width:580px}.gradient-text{background:linear-gradient(95deg,var(--mint),#6cbfff 55%,#c58cff);-webkit-background-clip:text;background-clip:text;color:transparent}.hero-copy p{color:#a9b5c0;max-width:470px;margin:0}.hero-art{border:1px solid #ffffff14;border-radius:26px;min-height:190px;overflow:hidden;position:relative;background:linear-gradient(130deg,#10252f,#16122c 60%,#25133c);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center}.hero-art:before,.hero-art:after{content:"";position:absolute;width:210px;height:210px;border-radius:50%;filter:blur(65px);opacity:.46}.hero-art:before{background:#26dcb1;left:-65px;top:20px}.hero-art:after{background:#914dff;right:-40px;bottom:-100px}.wave{width:88%;height:145px;position:relative;z-index:1}.wave path{fill:none;stroke:url(#waveGrad);stroke-width:2.3;stroke-linecap:round;opacity:.82}.art-caption{position:absolute;z-index:2;left:20px;bottom:15px;color:#d8e3eb;font-size:11px;letter-spacing:1px;text-transform:uppercase}.workspace{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(285px,.8fr);gap:22px;align-items:start}.panel{background:linear-gradient(155deg,#111a25f5,#0e151ef5);border:1px solid #293542;border-radius:var(--radius);box-shadow:var(--shadow)}.composer{padding:22px}.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}.section-head h2{margin:0;font-size:20px;letter-spacing:-.5px}.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.step{font-size:11px;color:#c3d0dc;background:#1b2632;border:1px solid #2e3b49;padding:6px 10px;border-radius:999px;white-space:nowrap}.label-row{display:flex;justify-content:space-between;align-items:center;margin:0 0 9px}.label{font-size:13px;font-weight:750}.counter{font-size:11px;color:var(--muted)}textarea{width:100%;min-height:142px;resize:vertical;border:1px solid #3a4857;border-radius:18px;background:#080d13;color:var(--text);padding:16px;outline:none;line-height:1.65;transition:border-color .18s,box-shadow .18s}textarea:focus,select:focus{border-color:#4de5b4;box-shadow:0 0 0 3px #4de5b41f}.textarea-hint{font-size:11px;color:#8493a2;margin-top:7px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0 20px}.chip{border:1px solid #344250;border-radius:999px;padding:7px 11px;color:#b9c7d3;background:#121c27;font-size:12px;cursor:pointer;transition:.15s}.chip:hover,.chip.active{border-color:#46dcb0;color:#82f4d0;background:#13332f}.options{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-top:1px solid #263340;border-bottom:1px solid #263340}.toggle-wrap{display:flex;align-items:center;gap:10px;cursor:pointer}.toggle{appearance:none;width:42px;height:24px;border:1px solid #526170;border-radius:999px;background:#29333e;position:relative;cursor:pointer;transition:.18s;margin:0}.toggle:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;border-radius:50%;background:#b7c1cb;transition:.18s}.toggle:checked{background:#178d74;border-color:#40d9ad}.toggle:checked:before{transform:translateX(17px);background:white}.toggle-title{font-size:13px;font-weight:700}.toggle-sub{font-size:11px;color:var(--muted)}.model-field{display:grid;gap:5px}.model-field label{font-size:11px;color:var(--muted)}select{background:#111b25;color:var(--text);border:1px solid #354351;border-radius:11px;padding:9px 11px;min-width:100px;outline:none}.quota-note{display:flex;gap:9px;align-items:flex-start;color:#c5b58b;background:#2c241329;border:1px solid #8d723438;border-radius:12px;padding:10px 12px;margin:15px 0 14px;font-size:11px}.quota-note svg{width:16px;height:16px;flex:0 0 auto;margin-top:1px;color:#edc66c}.generate{width:100%;border:0;border-radius:15px;padding:14px 18px;background:linear-gradient(100deg,#42dfb0,#438dff);font-size:15px;font-weight:850;color:#06141a;cursor:pointer;box-shadow:0 10px 28px #438dff32;transition:transform .15s,filter .15s}.generate:hover{transform:translateY(-1px);filter:brightness(1.07)}.generate:disabled{cursor:wait;opacity:.65;transform:none}.btn-caption{display:block;font-size:10px;font-weight:600;opacity:.76;margin-top:2px}.status{display:none;margin-top:15px;border:1px solid #324251;border-radius:14px;padding:13px;background:#0b1118}.status.show{display:block}.status-line{display:flex;align-items:center;gap:9px;font-weight:700;font-size:13px}.spinner{width:16px;height:16px;border:2px solid #40505d;border-top-color:var(--mint);border-radius:50%;animation:spin .8s linear infinite}.status-text{color:#a7b5c0;font-size:11px;margin-top:5px;overflow-wrap:anywhere}.status.error{border-color:#873c4e;background:#251219}.status.error .status-line{color:#ff9cab}.progress{height:4px;border-radius:9px;background:#25323f;overflow:hidden;margin-top:11px}.progress>i{display:block;height:100%;width:32%;background:linear-gradient(90deg,var(--mint),var(--blue));border-radius:9px;animation:load 1.8s ease-in-out infinite}.side{display:grid;gap:16px}.mini-card{padding:19px}.mini-title{font-size:14px;font-weight:800;margin:0 0 4px}.mini-copy{font-size:12px;color:var(--muted);margin:0 0 13px}.endpoint{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#a6e9d5;background:#0a1117;border:1px solid #263441;border-radius:10px;padding:10px;overflow-wrap:anywhere}.server-check{display:flex;align-items:center;gap:9px;font-size:12px;color:#c5d2dd;margin-top:12px}.results{padding:20px;min-height:150px}.results-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.results-head h2{font-size:18px;margin:0}.result-count{font-size:11px;color:#aebcc8;background:#1b2733;border-radius:999px;padding:5px 9px}.empty{border:1px dashed #344250;border-radius:16px;padding:20px;text-align:center;color:#8c9ba9;font-size:12px}.empty-icon{width:38px;height:38px;border-radius:13px;margin:0 auto 9px;display:grid;place-items:center;background:#15212a;color:#6edbb9}.track{border:1px solid #2b3947;border-radius:16px;background:#0b121a;padding:14px;margin-top:11px}.track-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}.track-title{font-size:13px;font-weight:800}.track-meta{font-size:10px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}.track-badge{font-size:10px;color:#79e7c1;border:1px solid #286553;background:#102b25;padding:4px 8px;border-radius:999px;white-space:nowrap}.track audio{display:block;width:100%;height:38px;margin:8px 0}.download{display:inline-flex;align-items:center;gap:7px;text-decoration:none;border:1px solid #3b4b59;background:#14202b;color:#d4e0e9;border-radius:10px;padding:8px 11px;font-size:11px;font-weight:750;cursor:pointer}.download:hover{border-color:var(--mint);color:var(--mint)}.footnote{text-align:center;color:#71808d;font-size:10px;margin-top:20px}.bottom-nav{display:none}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#e3fff5;color:#092018;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:700;box-shadow:var(--shadow);transition:.2s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}@keyframes spin{to{transform:rotate(360deg)}}@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}
-    @media(max-width:760px){.app{padding:14px 16px calc(98px + env(safe-area-inset-bottom))}.topbar{padding:5px 0 18px}.hero{grid-template-columns:1fr;gap:15px;margin-bottom:17px}.hero-copy{padding:10px 2px 0}.hero h1{font-size:37px}.hero-art{min-height:125px}.wave{height:108px}.workspace{grid-template-columns:1fr;gap:14px}.composer{padding:17px}.side{grid-row:2}.results{padding:17px}.bottom-nav{position:fixed;display:grid;grid-template-columns:repeat(3,1fr);left:0;right:0;bottom:0;padding:9px 10px calc(8px + env(safe-area-inset-bottom));background:#0c1218f2;border-top:1px solid #26333e;backdrop-filter:blur(18px);z-index:10}.nav-btn{border:0;background:transparent;color:#81909e;display:grid;justify-items:center;gap:3px;font-size:10px;padding:5px;cursor:pointer}.nav-btn svg{width:21px;height:21px}.nav-btn.active{color:var(--mint)}.server-pill{font-size:10px;padding:8px 10px}.brand-name{font-size:19px}}
-    @media(max-width:380px){.app{padding-left:12px;padding-right:12px}.hero h1{font-size:32px}.options{align-items:flex-start}.model-field select{min-width:86px}.server-pill{gap:6px}}
-  </style>
-  <style>
-    .track-top{align-items:center}.track-cover{width:78px;height:78px;flex:0 0 78px;border-radius:14px;overflow:hidden;border:1px solid #344250;background:linear-gradient(145deg,#123c3b,#202048 62%,#43254d);display:grid;place-items:center;color:#73e9c5;font-size:30px}.track-cover img{width:100%;height:100%;object-fit:cover;display:block}.track-info{min-width:0;flex:1}.track-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.download{font:inherit}.download:disabled{opacity:.65;cursor:wait}.lyrics{margin-top:11px;border-top:1px solid #263441;padding-top:9px}.lyrics summary{cursor:pointer;color:#86e8c8;font-size:12px;font-weight:750;list-style:none}.lyrics summary::-webkit-details-marker{display:none}.lyrics summary:after{content:"＋";float:right;color:#91a1ae}.lyrics[open] summary:after{content:"−"}.lyrics-content{margin-top:9px;max-height:280px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#080e14;border:1px solid #263441;border-radius:11px;padding:12px;color:#d3dce4;font-size:12px;line-height:1.75}.lyrics-content.loading{color:#a8b6c1}.lyrics-content.error{color:#ff9cab}
-  </style>
-  <link rel="stylesheet" href="./professional.css?v=3">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101014"><meta name="description" content="Music Fattah AI — buat musik orisinal dengan bantuan AI.">
+<title>Music Fattah AI — AI Music Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#101014;--panel:#18181f;--panel2:#20202a;--line:#30303b;--text:#f5f4fa;--muted:#a5a3b2;--purple:#a78bfa;--green:#65e6b4;--pink:#ed8dce}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -10%,#30204b 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:236px minmax(0,1fr)}aside{border-right:1px solid var(--line);padding:24px 15px;display:flex;flex-direction:column;gap:28px;background:#111116d9}.brand{display:flex;align-items:center;gap:11px;padding:0 9px}.logo{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(140deg,var(--purple),var(--green));color:#17131f;font-size:22px;font-weight:900;box-shadow:0 7px 25px #a78bfa30}.brand strong{display:block;font-size:15px;letter-spacing:-.3px}.brand small{color:var(--muted);font-size:11px}.nav-label{color:#777585;text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:800;padding:0 12px;margin-bottom:7px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#b8b6c5;text-align:left;padding:11px 12px;border-radius:11px;display:flex;gap:12px;align-items:center}.nav button .ico{width:20px;text-align:center;font-size:17px}.nav button.active{background:linear-gradient(90deg,#a78bfa20,#65e6b410);color:white;box-shadow:inset 2px 0 var(--purple)}.nav button:hover{background:#ffffff0b;color:#fff}.side-bottom{margin-top:auto}.vip{padding:15px;border:1px solid #a78bfa4a;border-radius:16px;background:linear-gradient(145deg,#29203c,#191922)}.vip b{display:block;margin:7px 0 4px}.vip p{font-size:12px;color:var(--muted);margin:0 0 12px}.pill{display:inline-flex;border-radius:99px;background:#a78bfa20;color:#cbbaff;font-size:10px;font-weight:800;letter-spacing:1px;padding:4px 8px}.small-btn{width:100%;border:1px solid #6b5b92;background:#a78bfa18;color:#e5dbff;border-radius:10px;padding:9px;font-weight:700}main{min-width:0}.topbar{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,52px);gap:16px}.crumb{color:var(--muted);font-size:13px}.crumb b{color:#fff}.top-actions{display:flex;align-items:center;gap:12px}.credits{font-size:12px;color:#d7d2e7;background:#ffffff08;border:1px solid var(--line);padding:8px 11px;border-radius:10px}.avatar{height:35px;width:35px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#ed8dce,#a78bfa);color:#1a1220;font-weight:900}.content{max-width:1250px;margin:auto;padding:34px clamp(18px,4vw,52px) 60px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:26px}.eyebrow{color:var(--green);font-size:11px;text-transform:uppercase;letter-spacing:2px;font-weight:800}.hero h1{font-size:clamp(28px,4vw,43px);letter-spacing:-1.7px;line-height:1.1;margin:9px 0 10px}.hero p{margin:0;color:var(--muted);max-width:580px}.status{white-space:nowrap;border:1px solid var(--line);border-radius:99px;padding:8px 12px;color:#b9b4c8;font-size:12px}.status i{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:7px}.studio{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:18px}.panel{background:linear-gradient(160deg,#1b1b24,#16161d);border:1px solid var(--line);border-radius:20px;padding:22px;min-width:0;box-shadow:0 15px 50px #00000012}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}.panel-head h2{font-size:16px;margin:0;letter-spacing:-.3px}.subtle{color:var(--muted);font-size:12px}.field{margin-bottom:18px}.field label{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:12px;color:#d5d2df;font-weight:700}.field label span{font-weight:400;color:var(--muted)}textarea,input,select{width:100%;border:1px solid #383844;background:#111117;color:#f4f2fa;border-radius:12px;padding:12px 13px;outline:none}textarea{min-height:110px;resize:vertical}textarea:focus,input:focus,select:focus{border-color:#a78bfa;box-shadow:0 0 0 3px #a78bfa18}.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:#22222c;color:#c5c2d1;border:1px solid #383844;border-radius:99px;padding:7px 11px;font-size:12px}.chip.selected{background:#a78bfa20;border-color:#a78bfa;color:#e1d7ff}.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #2c2c36}.toggle-copy b{display:block;font-size:12px}.toggle-copy small{color:var(--muted);font-size:11px}.switch{width:39px;height:23px;border:0;border-radius:99px;background:#41414e;padding:3px;flex-shrink:0}.switch:after{content:"";display:block;width:17px;height:17px;background:white;border-radius:50%;transition:.2s}.switch.on{background:#8e70e9}.switch.on:after{transform:translateX(16px)}.primary{width:100%;border:0;border-radius:13px;padding:14px 18px;background:linear-gradient(100deg,#a78bfa,#72e8bc);color:#17131e;font-weight:900;box-shadow:0 8px 25px #a78bfa22}.primary:hover{filter:brightness(1.06);transform:translateY(-1px)}.primary:disabled{opacity:.6;cursor:wait;transform:none}.fineprint{text-align:center;color:#858293;font-size:10px;margin:10px 0 0}.preview-art{aspect-ratio:1.5;border-radius:15px;overflow:hidden;position:relative;background:radial-gradient(circle at 68% 25%,#ed8dce88,transparent 24%),radial-gradient(circle at 30% 75%,#65e6b466,transparent 35%),linear-gradient(135deg,#32204d,#161624 60%,#183b3a);display:grid;place-items:center;margin-bottom:18px}.preview-art:before,.preview-art:after{content:"";position:absolute;border:1px solid #ffffff22;border-radius:50%;width:190px;height:190px}.preview-art:after{width:130px;height:130px}.orb{width:82px;height:82px;border-radius:26px;background:linear-gradient(145deg,#b9a2ff,#67e7b9);display:grid;place-items:center;color:#20172c;font-size:35px;transform:rotate(-8deg);box-shadow:0 0 60px #a78bfa55;z-index:1}.preview-tag{position:absolute;left:14px;top:14px}.preview-bottom{position:absolute;bottom:14px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#e7e2f4}.preview-bottom span{background:#11111790;padding:5px 8px;border-radius:7px}.tips{display:grid;gap:12px}.tip{display:flex;gap:12px;align-items:flex-start;padding:13px;border-radius:13px;background:#ffffff04;border:1px solid #2b2b35}.tip-icon{width:34px;height:34px;display:grid;place-items:center;background:#a78bfa18;border-radius:10px;flex-shrink:0}.tip b{font-size:12px;display:block;margin-bottom:3px}.tip p{font-size:11px;color:var(--muted);margin:0}.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:34px 0 15px}.section-title h2{font-size:18px;margin:0}.text-btn{border:0;background:transparent;color:#c6b5ff;font-size:12px}.track-list{display:grid;gap:9px}.track{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:13px;align-items:center;border:1px solid var(--line);background:#17171e;border-radius:14px;padding:10px 13px}.cover{width:54px;height:54px;border-radius:10px;display:grid;place-items:center;font-size:21px;background:linear-gradient(135deg,#593e78,#234d4a)}.track:nth-child(2) .cover{background:linear-gradient(135deg,#74445f,#493b7b)}.track:nth-child(3) .cover{background:linear-gradient(135deg,#294c58,#5e4a80)}.track-info{min-width:0}.track-info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}.track-info small{color:var(--muted);font-size:11px}.track-actions{display:flex;align-items:center;gap:8px}.play{width:36px;height:36px;border-radius:50%;border:1px solid #494553;background:#24232d;color:#fff}.duration{color:var(--muted);font-size:11px}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#262432;border:1px solid #62577b;color:#f6f1ff;border-radius:12px;padding:12px 16px;font-size:13px;transition:.25s;z-index:5;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.mobile-nav{display:none}
+/* Email authentication */
+.auth-trigger{border:1px solid #62577b;background:linear-gradient(110deg,#a78bfa20,#65e6b410);color:#eee7ff;border-radius:10px;padding:8px 13px;font-weight:750;font-size:12px;white-space:nowrap}.auth-user{display:flex;align-items:center;gap:9px}.auth-user .avatar{flex-shrink:0}.auth-overlay{position:fixed;inset:0;background:#07070bd9;backdrop-filter:blur(12px);z-index:20;display:none;align-items:center;justify-content:center;padding:18px}.auth-overlay.open{display:flex}.auth-card{width:min(100%,430px);border:1px solid #383344;border-radius:23px;padding:26px;background:radial-gradient(ellipse at 90% 0%,#3c2b5b80,transparent 45%),#17171f;box-shadow:0 25px 90px #0009;position:relative}.auth-close{position:absolute;right:15px;top:14px;border:1px solid #383844;background:#22212b;color:#eee;border-radius:9px;width:34px;height:34px;font-size:19px}.auth-brand{display:flex;align-items:center;gap:11px;margin-bottom:22px}.auth-brand .logo{flex-shrink:0}.auth-card h2{font-size:25px;letter-spacing:-.7px;margin:0 0 7px}.auth-intro{font-size:13px;color:var(--muted);margin:0 0 21px}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;border-radius:12px;background:#101016;margin-bottom:18px}.auth-tabs button{border:0;border-radius:9px;padding:10px;background:transparent;color:#aaa6b8;font-size:13px;font-weight:750}.auth-tabs button.active{background:#30263f;color:#eee6ff;box-shadow:inset 0 0 0 1px #594779}.auth-card .field{margin-bottom:14px}.auth-card .field label{font-size:12px}.auth-submit{margin-top:5px}.auth-foot{color:#898596;text-align:center;font-size:11px;margin:15px 0 0}.auth-link{border:0;background:none;color:#c8b5ff;padding:8px 0;font-size:12px}.auth-message{display:none;padding:10px 12px;border-radius:10px;background:#65e6b414;border:1px solid #65e6b444;color:#b7f5dc;font-size:12px;margin:0 0 14px}.auth-message.show{display:block}.auth-email{font-size:11px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+@media(max-width:900px){.app{grid-template-columns:76px minmax(0,1fr)}aside{padding:20px 10px;align-items:center}.brand{padding:0}.brand-text,.nav-label,.nav button .nav-text,.vip{display:none}.nav{width:100%}.nav button{justify-content:center;padding:12px 4px}.nav button .ico{font-size:19px}.studio{grid-template-columns:1fr}.side-bottom{display:none}.tips{grid-template-columns:repeat(3,1fr)}.tip{padding:10px;display:block}.tip-icon{margin-bottom:8px}}@media(max-width:600px){.app{display:block;padding-bottom:68px}aside{display:none}.topbar{height:62px;padding:0 17px}.content{padding:25px 15px 35px}.hero{display:block}.status{display:inline-block;margin-top:15px}.panel{padding:17px;border-radius:17px}.two{grid-template-columns:1fr}.tips{grid-template-columns:1fr}.tip{display:flex}.tip-icon{margin:0}.track{grid-template-columns:47px minmax(0,1fr) auto;padding:9px;gap:10px}.cover{width:47px;height:47px}.duration{display:none}.section-title{margin-top:27px}.mobile-nav{position:fixed;z-index:4;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:#14141bf2;border-top:1px solid var(--line);padding:8px 4px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(15px)}.mobile-nav button{border:0;background:transparent;color:#9f9bab;display:grid;gap:2px;justify-items:center;font-size:10px;min-width:54px}.mobile-nav button span{font-size:18px}.mobile-nav button.active{color:#c7b6ff}.credits{font-size:10px;padding:7px}.avatar{width:31px;height:31px}.hero h1{letter-spacing:-1px}}
+
+#serverBadge[data-state="error"] i{background:#ff728b}.auth-message.error{border-color:#ff6b6b55;color:#ffc1c1;background:#ff6b6b14}
+.generation-status{display:none;margin-top:14px;padding:13px;border:1px solid #383844;border-radius:13px;background:#111117}.generation-status.show{display:block}.generation-status.error{border-color:#873c4e;background:#251219}.generation-status-line{display:flex;align-items:center;gap:9px;font-size:13px}.generation-status.error .generation-status-line{color:#ff9cab}.generation-status-text{margin-top:5px;color:#a5a3b2;font-size:11px;overflow-wrap:anywhere}.generation-spinner{width:16px;height:16px;border:2px solid #41414e;border-top-color:#65e6b4;border-radius:50%;animation:fattah-spin .8s linear infinite}.generation-status:not(.show) .generation-spinner{display:none}.generation-progress{height:4px;border-radius:9px;background:#30303b;overflow:hidden;margin-top:11px}.generation-progress i{display:block;height:100%;width:32%;background:linear-gradient(90deg,#65e6b4,#a78bfa);border-radius:9px;animation:fattah-load 1.8s ease-in-out infinite}.generation-status:not(.show) .generation-progress{display:none}
+.result-count{font-size:11px;color:#ded8ee;background:#292433;border:1px solid #443857;border-radius:99px;padding:5px 9px;white-space:nowrap}.empty{border:1px dashed #383844;border-radius:15px;padding:22px;text-align:center;color:#a5a3b2;font-size:12px}.empty-icon{width:40px;height:40px;border-radius:13px;margin:0 auto 9px;display:grid;place-items:center;background:#a78bfa18;color:#c7b6ff;font-size:22px}.recover{margin:15px 0;padding:13px;border:1px solid #2b2b35;border-radius:14px;background:#111117}.recover label{display:block;font-size:12px;font-weight:750;margin-bottom:8px}.recover-controls{display:flex;gap:8px}.recover-controls input{min-width:0;flex:1;background:#111117;color:var(--text);border:1px solid #383844;border-radius:10px;padding:10px;font:12px ui-monospace,monospace}.recover-controls button{border:1px solid #494553;background:#24232d;color:#eee;border-radius:10px;padding:9px 11px;font-size:11px;font-weight:750;cursor:pointer}.recover-controls button:disabled{opacity:.6}.recover-hint{font-size:10px;color:var(--muted);margin-top:7px}
+.track{display:block;border:1px solid var(--line);background:#17171e;border-radius:14px;padding:13px;margin-top:10px}.track-top{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:12px;align-items:center;margin-bottom:8px}.track-cover{width:54px;height:54px;border-radius:10px;display:grid;place-items:center;overflow:hidden;font-size:21px;background:linear-gradient(135deg,#593e78,#234d4a)}.track-cover img{width:100%;height:100%;object-fit:cover}.track-info{min-width:0}.track-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}.track-meta{display:block;color:var(--muted);font-size:10px;overflow-wrap:anywhere}.track-badge{font-size:10px;color:#b7f5dc;border:1px solid #65e6b444;background:#65e6b414;padding:4px 8px;border-radius:99px;white-space:nowrap}.track audio{display:block;width:100%;height:38px;margin:8px 0}.track-actions{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.download{border:1px solid #494553;background:#24232d;color:#eee;border-radius:10px;padding:8px 11px;font-size:11px;font-weight:750;cursor:pointer}.download:hover{border-color:#a78bfa;color:#e1d7ff}.download:disabled{opacity:.6;cursor:wait}.favorite-button[aria-pressed="true"]{color:#ffb3d1;border-color:#8b4666}.lyrics{margin-top:10px;border-top:1px solid #2b2b35;padding-top:9px}.lyrics summary{cursor:pointer;color:#c6b5ff;font-size:12px;font-weight:750;list-style:none}.lyrics summary::-webkit-details-marker{display:none}.lyrics summary:after{content:"＋";float:right}.lyrics[open] summary:after{content:"−"}.lyrics-content{margin-top:9px;max-height:280px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#111117;border:1px solid #30303b;border-radius:11px;padding:12px;color:#d3d0de;font-size:12px;line-height:1.75}.lyrics-content.loading{color:#a5a3b2}.lyrics-content.error{color:#ff9cab}
+@keyframes fattah-spin{to{transform:rotate(360deg)}}@keyframes fattah-load{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}
+@media(max-width:600px){.track-top{grid-template-columns:47px minmax(0,1fr) auto;gap:9px}.track-cover{width:47px;height:47px}.track-actions{gap:6px}.download{padding:8px 9px;font-size:10px}.recover-controls{flex-wrap:wrap}.recover-controls button{flex:0 0 auto}}
+</style>
 </head>
 <body>
-  <style>
-    .recover{margin-top:14px;padding:13px;border:1px solid #2b3947;border-radius:14px;background:#0b121a}.recover label{display:block;font-size:12px;font-weight:750;margin-bottom:8px}.recover-controls{display:flex;gap:8px}.recover input{min-width:0;flex:1;background:#080d13;color:var(--text);border:1px solid #3a4857;border-radius:10px;padding:10px;font:12px ui-monospace,monospace}.recover button{border:1px solid #3b4b59;background:#14202b;color:#d4e0e9;border-radius:10px;padding:9px 11px;font-size:11px;font-weight:750;cursor:pointer}.recover button:disabled{opacity:.6}.recover-hint{font-size:10px;color:var(--muted);margin-top:7px}
-  </style>
-  <main class="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none"><path d="M5 17h3l2.2-7 4.1 14 3.5-19L22 22l2.7-8 2.3 3h2" stroke="#07141a" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div><div class="brand-name">Fattah<span class="gradient-text">Music</span></div><div class="brand-sub">Generator Musik AI</div></div>
-      </div>
-      <div class="server-pill" title="Status koneksi backend">
-        <span class="dot" id="serverDot"></span><span id="serverLabel">Memeriksa server…</span>
-      </div>
-    </header>
-
-    <section class="hero" aria-label="Perkenalan">
-      <div class="hero-copy">
-        <div class="eyebrow">Racik lagu dengan AI</div>
-        <h1>Ubah ide jadi <span class="gradient-text">suara.</span></h1>
-        <p>Tulis suasana, genre, dan vokal yang kamu mau. FattahMusic akan meracik lagu melalui server AI.</p>
-      </div>
-      <div class="hero-art" aria-hidden="true">
-        <svg class="wave" viewBox="0 0 560 150" preserveAspectRatio="none">
-          <defs><linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#54ecc1"/><stop offset=".52" stop-color="#59a6ff"/><stop offset="1" stop-color="#d37cff"/></linearGradient></defs>
-          <path d="M0 76 C30 76 25 47 45 47 S60 105 80 105 96 27 114 27 133 126 151 126 168 54 187 54 204 91 222 91 239 36 257 36 273 113 293 113 309 60 327 60 346 95 364 95 381 22 400 22 417 125 436 125 452 52 472 52 490 88 506 88 527 69 560 69"/>
-          <path d="M0 83 C40 83 43 66 61 66 S83 96 102 96 123 51 143 51 159 105 179 105 201 69 220 69 241 94 261 94 282 55 301 55 323 107 343 107 365 65 384 65 402 93 421 93 442 45 461 45 485 105 503 105 528 79 560 79" opacity=".42"/>
-          <path d="M0 74 C36 74 41 90 60 90 S81 58 100 58 122 91 141 91 163 69 182 69 203 84 223 84 245 61 264 61 285 98 304 98 326 67 345 67 366 86 386 86 407 53 426 53 449 93 468 93 490 68 509 68 534 82 560 82" opacity=".3"/>
-        </svg>
-        <div class="art-caption">IDEMU. JADI SUARA.</div>
-      </div>
-    </section>
-
-    <section class="workspace">
-      <section class="panel composer" id="composer">
-        <div class="section-head">
-          <div><h2>Racik lagu baru</h2><p>Jelaskan lagu yang ingin kamu dengar.</p></div>
-          <span class="step">01 · RACIK</span>
-        </div>
-        <form id="generatorForm">
-          <div class="label-row"><label class="label" for="prompt">Deskripsi lagu</label><span class="counter" id="counter">0 / 500</span></div>
-          <textarea id="prompt" maxlength="500" required placeholder="Contoh: reggae Jawa santai, vokal wanita, gitar hangat dan kendang koplo…">musik santai hari ini reggae jawa koplo vokal wanita</textarea>
-          <div class="textarea-hint">Detail suasana dan instrumen membantu AI memahami idemu.</div>
-          <div class="chips" aria-label="Saran gaya">
-            <button class="chip" type="button" data-add="reggae Jawa">Reggae Jawa</button>
-            <button class="chip" type="button" data-add="irama koplo santai">Koplo santai</button>
-            <button class="chip" type="button" data-add="vokal wanita">Vokal wanita</button>
-            <button class="chip" type="button" data-add="gitar ritmis dan kendang">Gitar + kendang</button>
+<div class="app">
+<aside>
+  <div class="brand"><div class="logo">♫</div><div class="brand-text"><strong>Music Fattah AI</strong><small>AI Music Studio</small></div></div>
+  <div style="width:100%"><div class="nav-label">Workspace</div><nav class="nav"><button class="active" data-tab="create"><span class="ico">✦</span><span class="nav-text">Buat Musik</span></button><button data-tab="library"><span class="ico">▤</span><span class="nav-text">Koleksi Saya</span></button><button data-tab="explore"><span class="ico">◉</span><span class="nav-text">Jelajahi</span></button></nav></div>
+  <div style="width:100%"><div class="nav-label">Personal</div><nav class="nav"><button data-tab="liked"><span class="ico">♡</span><span class="nav-text">Disukai</span></button><button data-tab="settings"><span class="ico">⚙</span><span class="nav-text">Pengaturan</span></button></nav></div>
+  <div class="side-bottom vip"><span class="pill">STUDIO PLUS</span><b>Buka kreativitasmu</b><p>Kelola karya musik dan nikmati pengalaman studio yang lebih lengkap.</p><button class="small-btn" id="vipBtn">Lihat paket</button></div>
+</aside>
+<main>
+  <header class="topbar"><div class="crumb">Studio <span style="color:#666">/</span> <b id="crumb">Buat Musik</b></div><div class="top-actions"><div class="credits">✦ <b>Studio AI</b></div><button class="auth-trigger" id="openAuth">Masuk / Daftar</button><div class="auth-user" id="authUser" style="display:none"><span class="auth-email" id="authEmail"></span><button class="auth-trigger" id="signOut">Keluar</button></div></div></header>
+  <div class="content">
+    <section class="hero"><div><div class="eyebrow">✦ YOUR IDEAS, YOUR SOUND</div><h1>Musik dimulai dari sini.</h1><p>Ubah ide, suasana hati, dan lirik menjadi karya musik. Ceritakan suara yang ingin kamu dengar.</p></div><div class="status" id="serverBadge" data-state="loading"><i></i> <span id="serverStatusText">Memeriksa server…</span></div></section>
+    <section class="studio">
+      <div class="panel"><div class="panel-head"><h2>✦ Buat lagu baru</h2><span class="subtle">AI Composer</span></div>
+        <form id="musicForm">
+          <div class="field"><label for="idea">Ceritakan ide musikmu <span id="charCount">0/500</span></label><textarea id="idea" maxlength="500" placeholder="Contoh: Lagu pop Indonesia yang hangat tentang perjalanan mengejar mimpi, vokal emosional, gitar akustik dan drum yang membangun..." required></textarea></div>
+          <div class="field"><label>Genre musik</label><div class="chips" id="genres"><button type="button" class="chip selected">Pop</button><button type="button" class="chip">Pop Rock</button><button type="button" class="chip">R&B</button><button type="button" class="chip">Dangdut</button><button type="button" class="chip">EDM</button><button type="button" class="chip">Lo-fi</button><button type="button" class="chip">Akustik</button><button type="button" class="chip"> Sinematik</button></div></div>
+          <div class="two"><div class="field"><label for="mood">Suasana</label><select id="mood"><option>Inspiratif</option><option>Bahagia</option><option>Romantis</option><option>Melankolis</option><option>Enerjik</option><option>Santai</option><option>Misterius</option></select></div><div class="field"><label for="vocal">Vokal</label><select id="vocal"><option>Vokal pria</option><option>Vokal wanita</option><option>Duet</option><option>Instrumental</option></select></div></div>
+          <div class="field"><label for="lyrics">Lirik lagu <span>Opsional</span></label><textarea id="lyrics" style="min-height:82px" placeholder="Tempel lirik buatanmu di sini, atau kosongkan untuk menggunakan alur lirik otomatis pada backend yang mendukungnya..."></textarea></div>
+          <div class="toggle-row"><div class="toggle-copy"><b>Mode instrumental</b><small>Musik tanpa vokal dan lirik</small></div><button class="switch" id="instrumental" type="button" aria-label="Aktifkan mode instrumental" aria-pressed="false"></button></div>
+          <div class="toggle-row" style="margin-bottom:18px"><div class="toggle-copy"><b>Mode kustom</b><small>Gunakan pengaturan gaya dan lirik sendiri</small></div><button class="switch on" id="custom" type="button" aria-label="Aktifkan mode kustom" aria-pressed="true"></button></div>
+          <button class="primary" type="submit" id="generate">✦ &nbsp; Buat Musik</button><p class="fineprint">Gunakan hanya lirik dan materi yang kamu miliki haknya. Pembuatan lagu memakai kuota SunoAPI.</p>
+          <div class="generation-status" id="generationStatus" role="status" aria-live="polite">
+            <div class="generation-status-line"><span class="generation-spinner" id="generationSpinner"></span><b id="generationTitle">Menyiapkan permintaan…</b></div>
+            <div class="generation-status-text" id="generationText"></div>
+            <div class="generation-progress" id="generationProgress"><i></i></div>
           </div>
-          <div class="options">
-            <label class="toggle-wrap" for="instrumental">
-              <input class="toggle" type="checkbox" id="instrumental">
-              <span><span class="toggle-title">Instrumental saja</span><br><span class="toggle-sub">Tanpa vokal</span></span>
-            </label>
-            <div class="model-field"><label for="model">Model musik</label><select id="model"><option value="V6" selected>Suno V6</option><option value="V4_5">Suno V4.5</option></select></div>
-          </div>
-          <div class="quota-note"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 2.9 19h18.2L12 3Z" stroke="currentColor" stroke-width="1.7"/><path d="M12 9v4m0 3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Setiap pembuatan lagu memakai kuota SunoAPI. Hindari menekan tombol berulang kali saat proses berlangsung.</span></div>
-          <button class="generate" id="generateBtn" type="submit">Buat lagu <span aria-hidden="true">↗</span></button>
-          <div class="status" id="statusBox" role="status" aria-live="polite"><div class="status-line"><span class="spinner" id="statusSpinner"></span><span id="statusTitle">Menyiapkan permintaan…</span></div><div class="status-text" id="statusText"></div><div class="progress" id="progress"><i></i></div></div>
         </form>
-      </section>
-
-      <aside class="side">
-        <section class="panel mini-card">
-          <h3 class="mini-title">Server aktif</h3>
-          <p class="mini-copy">Semua permintaan musik dikirim lewat backend. API key tidak disimpan di halaman ini.</p>
-          <div class="endpoint">https://musik-fattah-p.onrender.com</div>
-          <div class="server-check"><span class="dot" id="sideDot"></span><span id="sideServerLabel">Mengecek koneksi…</span></div>
-        </section>
-        <section class="panel results" id="results">
-          <div class="results-head"><h2>Hasil lagu</h2><span class="result-count" id="resultCount">0 track</span></div>
-          <div class="empty" id="emptyState"><div class="empty-icon"><svg viewBox="0 0 24 24" width="21" height="21" fill="none"><path d="M9 18V5l12-2v13M9 18c0 1.1-1.6 2-3.5 2S2 19.1 2 18s1.6-2 3.5-2S9 16.9 9 18Zm12-2c0 1.1-1.6 2-3.5 2S14 17.1 14 16s1.6-2 3.5-2 3.5.9 3.5 2ZM9 9l12-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Belum ada lagu. Tulis ide dan tekan <b>Buat lagu</b>.</div>
-          <div id="trackList"></div>
-          <div class="recover"><label for="taskLookup">Sudah membuat lagu? Muat hasilnya lagi</label><div class="recover-controls"><input id="taskLookup" type="text" autocomplete="off" placeholder="Tempel Task ID lagu"><button id="lookupBtn" type="button">Ambil hasil</button></div><div class="recover-hint">Memeriksa task yang sudah ada; tidak membuat lagu baru atau memakai kuota generate.</div></div>
-        </section>
-      </aside>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>Pratinjau studio</h2><span class="pill">CREATIVE SPACE</span></div><div class="preview-art"><span class="pill preview-tag">MUSIC LAB</span><div class="orb">♫</div><div class="preview-bottom"><b>Temukan suaramu</b><span>AI · SOUND · YOU</span></div></div><div class="tips"><div class="tip"><div class="tip-icon">✎</div><div><b>Jelaskan dengan spesifik</b><p>Sebutkan genre, instrumen, tempo, dan karakter vokal yang kamu inginkan.</p></div></div><div class="tip"><div class="tip-icon">♫</div><div><b>Gabungkan suasana</b><p>Contoh: pop sinematik, hangat, dengan chorus yang megah.</p></div></div><div class="tip"><div class="tip-icon">♡</div><div><b>Buat jadi milikmu</b><p>Eksperimen dengan ide dan lirik orisinal untuk menemukan ciri khas.</p></div></div></div></div>
     </section>
-    <p class="footnote">FattahMusic · Studio musik AI</p>
-  </main>
+    <section id="librarySection">
+      <div class="section-title"><div><h2>Karya terbaru</h2><div class="subtle">Koleksi lagu dari akun Anda.</div></div><div class="library-actions"><span class="result-count" id="resultCount">0 lagu</span><button class="text-btn" id="viewAll" type="button">Lihat semua →</button></div></div>
+      <div class="recover"><label for="taskLookup">Muat hasil dengan Task ID</label><div class="recover-controls"><input id="taskLookup" type="text" autocomplete="off" placeholder="Tempel Task ID lagu"><button id="lookupBtn" type="button">Ambil hasil</button></div><div class="recover-hint">Memeriksa task yang sudah ada; tidak membuat lagu baru atau memakai kuota generate.</div></div>
+      <div class="empty" id="emptyState"><div class="empty-icon">♫</div><span id="emptyMessage">Masuk atau buat akun agar karya dan riwayat lagu tersimpan.</span></div>
+      <div class="track-list" id="tracks" aria-live="polite"></div>
+    </section>
+    <footer style="border-top:1px solid var(--line);margin-top:32px;padding-top:17px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#777585;font-size:11px"><span>© 2026 Music Fattah AI · AI Music Studio</span><span>Musik orisinal dimulai dari ide kamu.</span></footer>
+  </div>
+</main>
+</div>
+<nav class="mobile-nav"><button class="active" data-tab="create"><span>✦</span>Buat</button><button data-tab="library"><span>▤</span>Koleksi</button><button data-tab="explore"><span>◉</span>Jelajahi</button><button data-tab="liked"><span>♡</span>Disukai</button></nav>
 
-  <nav class="bottom-nav" aria-label="Navigasi utama">
-    <button class="nav-btn active" data-target="composer" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7L12 2Zm7 13 .9 3.1L23 19l-3.1.9L19 23l-.9-3.1L15 19l3.1-.9L19 15Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Buat</button>
-    <button class="nav-btn" data-target="results" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13M9 18c0 1.1-1.6 2-3.5 2S2 19.1 2 18s1.6-2 3.5-2S9 16.9 9 18Zm12-2c0 1.1-1.6 2-3.5 2S14 17.1 14 16s1.6-2 3.5-2 3.5.9 3.5 2Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Lagu</button>
-    <button class="nav-btn" id="serverNav" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="1.7"/><path d="m19.4 15 .1.1 1.2 1-1.5 2.6-1.5-.6a7.8 7.8 0 0 1-1.6.9l-.3 1.6h-3l-.3-1.6a7.8 7.8 0 0 1-1.6-.9l-1.5.6-1.5-2.6 1.2-1a7.1 7.1 0 0 1 0-1.9l-1.2-1 1.5-2.6 1.5.6a7.8 7.8 0 0 1 1.6-.9l.3-1.6h3l.3 1.6a7.8 7.8 0 0 1 1.6.9l1.5-.6 1.5 2.6-1.2 1a7.1 7.1 0 0 1 0 1.9Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Server</button>
-  </nav>
-  <div class="toast" id="toast"></div>
+<div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <section class="auth-card">
+    <button class="auth-close" id="closeAuth" aria-label="Tutup">×</button>
+    <div class="auth-brand"><div class="logo">♫</div><div><strong>Music Fattah AI</strong><div class="subtle">AI Music Studio</div></div></div>
+    <h2 id="authTitle">Selamat datang kembali</h2><p class="auth-intro" id="authIntro">Masuk untuk menyimpan dan mengelola karya musikmu.</p>
+    <div class="auth-tabs"><button type="button" class="active" data-auth-mode="login">Masuk</button><button type="button" data-auth-mode="signup">Buat akun</button></div>
+    <div class="auth-message" id="authMessage" role="status"></div>
+    <form id="authForm">
+      <div class="field" id="nameField" style="display:none"><label for="authName">Nama tampilan</label><input id="authName" autocomplete="name" placeholder="Nama kamu"></div>
+      <div class="field"><label for="authEmailInput">Alamat email</label><input id="authEmailInput" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
+      <div class="field"><label for="authPassword">Kata sandi <span>Minimal 6 karakter</span></label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Masukkan kata sandi" required></div>
+      <button class="primary auth-submit" type="submit" id="authSubmit">Masuk ke Studio</button>
+    </form>
+    <button class="auth-link" type="button" id="forgotPassword">Lupa kata sandi?</button>
+    <p class="auth-foot">Dengan melanjutkan, kamu menyetujui ketentuan layanan dan kebijakan privasi.</p>
+  </section>
+</div>
 
-  <script>
-    'use strict';
-    const API_BASE = 'https://musik-fattah-p.onrender.com';
-    const $ = (id) => document.getElementById(id);
-    const promptEl = $('prompt');
-    const form = $('generatorForm');
-    const button = $('generateBtn');
-    let toastTimer;
-
-    function setServer(ok, label) {
-      $('serverDot').className = 'dot ' + (ok ? 'ok' : 'bad');
-      $('sideDot').className = 'dot ' + (ok ? 'ok' : 'bad');
-      $('serverLabel').textContent = label;
-      $('sideServerLabel').textContent = label;
-    }
-    async function checkHealth() {
-      try {
-        const r = await fetch(API_BASE + '/health', {method:'GET', headers:{'Accept':'application/json'}});
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const data = await r.json();
-        setServer(data.status === 'ok', data.status === 'ok' ? 'Server aktif' : 'Server merespons');
-      } catch (e) {
-        setServer(false, 'Koneksi belum tersedia');
-        console.warn('Health check failed:', e);
-      }
-    }
-    function showStatus(title, text='', state='loading') {
-      const box = $('statusBox'); box.className = 'status show' + (state === 'error' ? ' error' : '');
-      $('statusTitle').textContent = title; $('statusText').textContent = text;
-      $('statusSpinner').style.display = state === 'loading' ? 'block' : 'none';
-      $('progress').style.display = state === 'loading' ? 'block' : 'none';
-    }
-    function toast(message) {
-      const el = $('toast'); el.textContent = message; el.classList.add('show');
-      clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
-    }
-    function findTaskId(obj) {
-      if (!obj || typeof obj !== 'object') return null;
-      if (typeof obj.taskId === 'string' && obj.taskId) return obj.taskId;
-      if (typeof obj.task_id === 'string' && obj.task_id) return obj.task_id;
-      for (const value of Object.values(obj)) {
-        if (value && typeof value === 'object') { const found = findTaskId(value); if (found) return found; }
-      }
-      return null;
-    }
-    function collectTracks(obj, taskId='', found=[]) {
-      if (!obj || typeof obj !== 'object') return found;
-      if (Array.isArray(obj)) { obj.forEach(x => collectTracks(x, taskId, found)); return found; }
-      const url = obj.audioUrl || obj.audio_url || obj.streamAudioUrl || obj.stream_audio_url;
-      if (typeof url === 'string' && /^https?:\/\//i.test(url) && !found.some(x => x.url === url)) {
-        found.push({url, title: obj.title || obj.name || '', id: String(obj.audioId || obj.audio_id || obj.id || ''), taskId, imageUrl: obj.imageUrl || obj.image_url || obj.coverUrl || obj.cover_url || ''});
-      }
-      Object.values(obj).forEach(v => { if (v && typeof v === 'object') collectTracks(v, taskId, found); });
-      return found;
-    }
-    function findFailure(obj) {
-      if (!obj || typeof obj !== 'object') return null;
-      if (Array.isArray(obj)) { for (const x of obj) { const f=findFailure(x); if(f)return f; } return null; }
-      const state = String(obj.status || obj.state || obj.callbackType || '').toLowerCase();
-      if (['failed','error','failure'].includes(state)) return obj.msg || obj.errorMessage || state;
-      for (const v of Object.values(obj)) { if (v && typeof v === 'object') { const f=findFailure(v); if(f)return f; } }
-      return null;
-    }
-    function extractLyrics(value) {
-      if (typeof value === 'string') return value.trim();
-      if (Array.isArray(value)) {
-        return value.map(item => {
-          if (typeof item === 'string') return item.trim();
-          if (item && typeof item === 'object') return item.text || item.lyric || item.content || item.line || item.words || '';
-          return '';
-        }).filter(Boolean).join('\n').trim();
-      }
-      if (value && typeof value === 'object') {
-        for (const key of ['lyrics','lyric','lyricText','plainLyrics','syncedLyrics','lines','segments','text']) {
-          if (value[key] !== undefined) { const result = extractLyrics(value[key]); if (result) return result; }
-        }
-        for (const child of Object.values(value)) {
-          if (child && typeof child === 'object') { const result = extractLyrics(child); if (result) return result; }
-        }
-      }
-      return '';
-    }
-    async function loadLyrics(track, content) {
-      if (!track.taskId || !track.id) { content.className='lyrics-content error'; content.textContent='ID audio tidak tersedia pada respons server, jadi lirik belum dapat diminta.'; return; }
-      content.className='lyrics-content loading'; content.textContent='Memuat lirik dari server…';
-      try {
-        const url = `${API_BASE}/lyrics/${encodeURIComponent(track.taskId)}?audioId=${encodeURIComponent(track.id)}`;
-        const response = await fetch(url, {headers:{'Accept':'application/json'}});
-        const body = await readJson(response);
-        if (!response.ok) throw new Error(typeof body.detail === 'string' ? body.detail : `HTTP ${response.status}`);
-        const lyrics = extractLyrics(body);
-        if (!lyrics) throw new Error('Server tidak mengembalikan teks lirik untuk track ini.');
-        content.className='lyrics-content'; content.textContent=lyrics;
-      } catch (error) { content.className='lyrics-content error'; content.textContent='Lirik belum dapat dimuat: ' + (error.message || 'periksa koneksi server.'); }
-    }
-    function renderTracks(tracks) {
-      $('emptyState').style.display = 'none';
-      $('resultCount').textContent = `${tracks.length} track`;
-      $('trackList').innerHTML = '';
-      const videoTaskIds = new Set();
-      tracks.forEach((track, index) => {
-        const card = document.createElement('article'); card.className = 'track';
-        const title = track.title || `Lagu AI · Versi ${index+1}`;
-        const top = document.createElement('div'); top.className = 'track-top';
-        const cover = document.createElement('div'); cover.className='track-cover'; cover.setAttribute('aria-label','Sampul lagu'); cover.textContent='♫';
-        if (track.imageUrl && /^https?:\/\//i.test(track.imageUrl)) { const img=document.createElement('img'); img.src=track.imageUrl; img.alt=`Sampul ${title}`; img.loading='lazy'; img.onerror=()=>{img.remove(); cover.textContent='♫';}; cover.textContent=''; cover.append(img); }
-        const info = document.createElement('div'); info.className='track-info';
-        const t = document.createElement('div'); t.className='track-title'; t.textContent=title;
-        const meta = document.createElement('div'); meta.className='track-meta'; meta.textContent=track.id ? `Audio ID: ${track.id}` : 'Hasil dari SunoAPI';
-        info.append(t,meta);
-        const badge=document.createElement('span'); badge.className='track-badge'; badge.textContent='Selesai'; top.append(cover,info,badge);
-        const audio=document.createElement('audio'); audio.controls=true; audio.preload='none'; audio.src=track.url;
-        const actions=document.createElement('div'); actions.className='track-actions';
-        const download=document.createElement('button'); download.type='button'; download.className='download'; download.textContent='↓  Unduh MP3';
-        download.addEventListener('click', async () => {
-          if (!track.taskId) { toast('Task ID tidak tersedia untuk unduhan.'); return; }
-          const query=track.id ? `?audioId=${encodeURIComponent(track.id)}` : '';
-          const downloadUrl=`${API_BASE}/download/${encodeURIComponent(track.taskId)}${query}`;
-          download.disabled=true; download.textContent='Mengunduh…';
-          try {
-            const response=await fetch(downloadUrl);
-            if (!response.ok) { const body=await readJson(response); throw new Error(typeof body.detail==='string' ? body.detail : `HTTP ${response.status}`); }
-            const blob=await response.blob(); if (!blob.size) throw new Error('File audio kosong.');
-            const objectUrl=URL.createObjectURL(blob); const link=document.createElement('a'); link.href=objectUrl; link.download=`FattahMusic-versi-${index+1}.mp3`; document.body.append(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(objectUrl),60000); toast('Unduhan MP3 dimulai.');
-          } catch (error) { toast('Unduhan gagal: ' + (error.message || 'periksa koneksi server.')); }
-          finally { download.disabled=false; download.textContent='↓  Unduh MP3'; }
-        });
-        actions.append(download);
-        if (track.taskId && !videoTaskIds.has(track.taskId)) {
-          videoTaskIds.add(track.taskId);
-          const mp4 = document.createElement('button'); mp4.type = 'button'; mp4.className = 'download video-download'; mp4.textContent = 'Unduh MP4';
-          mp4.title = 'Video MP4 diproses otomatis oleh server setelah audio selesai.';
-          mp4.addEventListener('click', async () => {
-            mp4.disabled = true; mp4.textContent = 'Memeriksa MP4…';
-            try {
-              const statusResponse = await fetch(`${API_BASE}/video-status/${encodeURIComponent(track.taskId)}`, {headers:{'Accept':'application/json'}, cache:'no-store'});
-              const status = await readJson(statusResponse);
-              if (!statusResponse.ok) throw new Error(typeof status.detail === 'string' ? status.detail : `HTTP ${statusResponse.status}`);
-              if (!status.ready) { toast('MP4 masih diproses. Coba lagi beberapa saat lagi.'); return; }
-              const link = document.createElement('a');
-              link.href = `${API_BASE}/download-video/${encodeURIComponent(track.taskId)}`;
-              link.rel = 'noopener'; document.body.append(link); link.click(); link.remove();
-              toast('Unduhan MP4 dimulai.');
-            } catch (error) {
-              toast('MP4 belum dapat diunduh: ' + (error.message || 'periksa koneksi server.'));
-            } finally { mp4.disabled = false; mp4.textContent = 'Unduh MP4'; }
-          });
-          actions.append(mp4);
-        }
-        const lyricsBox=document.createElement('details'); lyricsBox.className='lyrics';
-        const summary=document.createElement('summary'); summary.textContent='Lihat lirik';
-        const lyricContent=document.createElement('div'); lyricContent.className='lyrics-content'; lyricContent.textContent='Buka untuk meminta lirik dari server.';
-        lyricsBox.append(summary,lyricContent); lyricsBox.addEventListener('toggle',()=>{if(lyricsBox.open&&!lyricsBox.dataset.requested){lyricsBox.dataset.requested='1';loadLyrics(track,lyricContent);}});
-        card.append(top,audio,actions,lyricsBox); $('trackList').append(card);
-      });
-    }
-    async function readJson(response) {
-      const text = await response.text();
-      try { return text ? JSON.parse(text) : {}; }
-      catch { return {raw:text.slice(0,1200)}; }
-    }
-    async function pollTask(taskId) {
-      const maxAttempts = 60;
-      for (let i=0; i<maxAttempts; i++) {
-        await new Promise(resolve => setTimeout(resolve, 10000));
-        showStatus('Meracik lagu…', `Memeriksa hasil · ${Math.min((i+1)*10,600)} detik`);
-        const r = await fetch(`${API_BASE}/record-info/${encodeURIComponent(taskId)}`, {headers:{'Accept':'application/json'}});
-        const body = await readJson(r);
-        if (!r.ok) throw new Error(`Cek status HTTP ${r.status}: ${JSON.stringify(body).slice(0,350)}`);
-        const tracks = collectTracks(body, taskId);
-        if (tracks.length) { renderTracks(tracks); showStatus('Lagu selesai', `${tracks.length} hasil tersedia. Video MP4 dapat diunduh jika sudah selesai diproses.`, 'done'); return; }
-        const fail = findFailure(body);
-        if (fail) throw new Error('SunoAPI gagal: ' + fail);
-      }
-      throw new Error('Waktu tunggu habis. Task masih diproses; coba cek lagi nanti.');
-    }
-    async function lookupExistingTask() {
-      const taskId=$('taskLookup').value.trim();
-      if (!taskId) { toast('Tempel Task ID terlebih dahulu.'); $('taskLookup').focus(); return; }
-      const lookup=$('lookupBtn'); lookup.disabled=true; showStatus('Memuat lagu yang sudah dibuat…','Memeriksa status task tanpa mengirim generate baru.');
-      try {
-        const response=await fetch(`${API_BASE}/record-info/${encodeURIComponent(taskId)}`,{headers:{'Accept':'application/json'}});
-        const body=await readJson(response);
-        if (!response.ok) throw new Error(`Pemeriksaan task HTTP ${response.status}: ${JSON.stringify(body).slice(0,350)}`);
-        const tracks=collectTracks(body,taskId);
-        if (!tracks.length) { const failed=findFailure(body); throw new Error(failed || 'Audio belum tersedia untuk Task ID ini. Pastikan ID benar atau tunggu task selesai.'); }
-        try { localStorage.setItem('fattahmusic.lastTaskId',taskId); } catch {}
-        renderTracks(tracks); showStatus('Hasil lagu ditemukan',`${tracks.length} track dimuat ulang.`, 'done'); $('results').scrollIntoView({behavior:'smooth',block:'start'});
-      } catch (error) { showStatus('Hasil belum dapat dimuat',error.message || 'Periksa Task ID dan koneksi server.','error'); }
-      finally { lookup.disabled=false; }
-    }
-    $('lookupBtn').addEventListener('click',lookupExistingTask);
-    try { $('taskLookup').value=localStorage.getItem('fattahmusic.lastTaskId') || ''; } catch {}
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const prompt = promptEl.value.trim();
-      if (!prompt) { promptEl.focus(); toast('Tulis deskripsi lagu terlebih dahulu.'); return; }
-      if (!window.confirm('Permintaan ini akan memakai kuota SunoAPI. Lanjutkan?')) return;
-      button.disabled = true; showStatus('Mengirim permintaan…', 'Menghubungi server Musik Fattah.');
-      try {
-        const response = await fetch(API_BASE + '/generate-music', {
-          method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
-          body:JSON.stringify({prompt, instrumental:$('instrumental').checked, customMode:false, model:$('model').value})
-        });
-        const body = await readJson(response);
-        if (!response.ok) throw new Error(`Generate HTTP ${response.status}: ${JSON.stringify(body).slice(0,500)}`);
-        const taskId = findTaskId(body);
-        if (!taskId) throw new Error('Server belum mengirim task ID. Respons: ' + JSON.stringify(body).slice(0,700));
-        try { localStorage.setItem('fattahmusic.lastTaskId', taskId); $('taskLookup').value=taskId; } catch {}
-        showStatus('Task diterima', `ID ${taskId} · menunggu audio selesai…`);
-        await pollTask(taskId);
-        $('results').scrollIntoView({behavior:'smooth',block:'start'});
-      } catch (e) {
-        console.error(e); showStatus('Generate belum berhasil', e.message || 'Periksa koneksi server lalu coba lagi.', 'error');
-      } finally { button.disabled = false; }
-    });
-    promptEl.addEventListener('input', () => $('counter').textContent = `${promptEl.value.length} / 500`);
-    document.querySelectorAll('[data-add]').forEach(chip => chip.addEventListener('click', () => {
-      const phrase = chip.dataset.add;
-      if (!promptEl.value.toLowerCase().includes(phrase.toLowerCase())) promptEl.value = (promptEl.value.trim().replace(/[,. ]+$/,'') + ', ' + phrase).slice(0,500);
-      promptEl.dispatchEvent(new Event('input')); promptEl.focus(); chip.classList.add('active'); setTimeout(()=>chip.classList.remove('active'),700);
-    }));
-    document.querySelectorAll('.nav-btn[data-target]').forEach(btn => btn.addEventListener('click', () => {
-      document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); btn.classList.add('active');
-      $(btn.dataset.target).scrollIntoView({behavior:'smooth',block:'start'});
-    }));
-    $('serverNav').addEventListener('click', async () => { await checkHealth(); toast($('serverLabel').textContent); });
-    $('counter').textContent = `${promptEl.value.length} / 500`;
-    checkHealth();
-    const supabaseLibrary = document.createElement('script');
-    supabaseLibrary.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    supabaseLibrary.onload = () => {
-      const configScript = document.createElement('script');
-      configScript.src = './supabase-config.js';
-      configScript.onload = () => {
-        const loginScript = document.createElement('script');
-        loginScript.src = './supabase-login.js?v=7';
-        document.body.append(loginScript);
-      };
-      configScript.onerror = () => console.error('Supabase configuration failed to load.');
-      document.body.append(configScript);
-    };
-    supabaseLibrary.onerror = () => console.error('Supabase client failed to load.');
-    document.body.append(supabaseLibrary);
-  </script>
-</body>
-</html>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js?v=2"></script>
+<script src="./music-fattah-app.js?v=1"></script>
+</body></html>
